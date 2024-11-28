@@ -1,6 +1,5 @@
 # KMITL+ (unofficial phuwit's fork)
-
-Open Souce Project สำหรับ ~~Chrome~~ Web Extension ซึ่ง Extension นี้จะเน้นเรื่องการเพิ่ม Feature ใหม่ ๆ เข้าไปในตัวเว็บ
+a ~~chrome~~web extension that add more features to KMITL's website. (unofficial phuwit's build)
 
 ## Attribution
 based on the original work of [t0ngk](khttps://github.com/t0ngk) [KMTIL+](https://github.com/t0ngk/KMITL-PLUS), under MIT license.
