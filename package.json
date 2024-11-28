@@ -1,5 +1,6 @@
 {
   "name": "kmitl-plus",
+  "license": "AGPL-3.0-only",
   "private": true,
   "version": "2.1.1",
   "type": "module",
