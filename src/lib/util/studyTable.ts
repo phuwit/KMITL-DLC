@@ -1,5 +1,7 @@
-export function getinfo(studyTable) {
-  const table = studyTable.querySelectorAll("tbody")[1];
+import { ClassInfo, ScheduleItem, Subject } from "../types";
+
+export function getinfo(rawTable: HTMLTableElement) {
+  const table = rawTable.querySelectorAll("tbody")[1];
   const facultyName = table.childNodes[6].textContent.trim();
   const departmentSubject = table.childNodes[10].textContent.trim().split("   ");
   const departmentTerm = table.childNodes[14].textContent.trim().split("   ");
@@ -15,8 +17,8 @@ export function getinfo(studyTable) {
   };
 }
 
-export function scrapeTable(studyTable) {
-  const studyTableRows = studyTable.querySelectorAll("tr");
+export function scrapeTable(rawTable: HTMLTableElement) {
+  const studyTableRows = rawTable.querySelectorAll("tr");
 
   const studyTableRowsArray = Array.from(studyTableRows)
     .filter((item) => {
@@ -24,23 +26,48 @@ export function scrapeTable(studyTable) {
     })
     .splice(1);
 
-  let scrapedData = [];
+  let scrapedData: Subject[] = [];
 
-  studyTableRowsArray.forEach((item, index) => {
+  studyTableRowsArray.forEach((item) => {
     const subjectId = item.childNodes[5].textContent;
     const subjectName = item.childNodes[9].textContent;
     const subjectCredits = item.childNodes[13].textContent;
-    const subjectLecture = {
+
+    const roomInfo = item.childNodes[29];
+    let room = [];
+    roomInfo.childNodes.forEach((item) => {
+      if (item.textContent != "") {
+        room.push(item.textContent);
+      }
+    });
+    const lectureRoom = room[0];
+    const labRoom = room[1];
+
+    const buildingInfo = item.childNodes[33];
+    const building = [];
+    buildingInfo.childNodes.forEach((item) => {
+      if (item.textContent != "") {
+        building.push(item.textContent);
+      }
+    });
+    const lectureBuilding = building[0];
+    const labBuilding = building[1];
+
+    const subjectLecture: ClassInfo = {
+      building: lectureBuilding,
+      room: lectureRoom,
       sec: item.childNodes[17].textContent,
-      period: [],
+      periods: [],
     };
-    const subjectLab = {
+    const subjectLab: ClassInfo = {
+      building: labBuilding,
+      room: labRoom,
       sec: item.childNodes[21].textContent,
-      period: [],
+      periods: [],
     };
     const subjectDescription = item.childNodes[35].textContent;
     const subjectPeriod = item.childNodes[25];
-    subjectPeriod.childNodes.forEach((item, index) => {
+    subjectPeriod.childNodes.forEach((item) => {
       if (item.textContent.includes("ท") || item.textContent.includes("L")) {
         const splitData = item.textContent.split(" ");
         const time = splitData[1].split("-");
@@ -49,7 +76,7 @@ export function scrapeTable(studyTable) {
           start: time[0],
           end: time[1],
         };
-        subjectLecture.period.push(period);
+        subjectLecture.periods.push(period);
       } else if (item.textContent.includes("ป") || item.textContent.includes("P")) {
         const splitData = item.textContent.split(" ");
         const time = splitData[1].split("-");
@@ -58,29 +85,12 @@ export function scrapeTable(studyTable) {
           start: time[0],
           end: time[1],
         };
-        subjectLab.period.push(period);
+        subjectLab.periods.push(period);
       }
     });
-    const roomInfo = item.childNodes[29];
-    let room = [];
-    roomInfo.childNodes.forEach((item, index) => {
-      if (item.textContent != "") {
-        room.push(item.textContent);
-      }
-    });
-    subjectLecture["room"] = room[0];
-    subjectLab["room"] = room[1];
 
-    const buildingInfo = item.childNodes[33];
-    const building = [];
-    buildingInfo.childNodes.forEach((item, index) => {
-      if (item.textContent != "") {
-        building.push(item.textContent);
-      }
-    });
-    subjectLecture["building"] = building[0];
-    subjectLab["building"] = building[1];
-    const data = {
+
+    const data: Subject = {
       subjectId,
       subjectName,
       subjectDescription,
@@ -94,9 +104,9 @@ export function scrapeTable(studyTable) {
   return scrapedData;
 }
 
-export function flattenStudyTable(data) {
-  let flattenData = [];
-  data.forEach((item, index) => {
+export function flattenStudyTable(subjects: Subject[]) {
+  let flattenData: ScheduleItem[] = [];
+  subjects.forEach((item) => {
     console.log(item)
     const {
       subjectId,
@@ -108,20 +118,20 @@ export function flattenStudyTable(data) {
     } = item;
     const {
       sec: lectureSec,
-      period: lecturePeriod,
+      periods: lecturePeriod,
       room: lectureRoom,
       building: lectureBuilding,
     } = subjectLecture;
     const {
       sec: labSec,
-      period: labPeriod,
+      periods: labPeriod,
       room: labRoom,
       building: labBuilding,
     } = subjectLab;
     if (lectureSec != "") {
-      lecturePeriod.forEach((item, index) => {
+      lecturePeriod.forEach((item) => {
         const { day, start, end } = item;
-        const data = {
+        const data: ScheduleItem = {
           subjectId,
           subjectName,
           subjectCredits,
@@ -138,9 +148,9 @@ export function flattenStudyTable(data) {
       });
     }
     if (labSec != "") {
-      labPeriod.forEach((item, index) => {
+      labPeriod.forEach((item) => {
         const { day, start, end } = item;
-        const data = {
+        const data: ScheduleItem = {
           subjectId,
           subjectName,
           subjectCredits,
@@ -160,7 +170,7 @@ export function flattenStudyTable(data) {
   return flattenData;
 }
 
-export function sortByDay(data) {
+export function sortByDay(scheduleItems: ScheduleItem[]) {
   const days = {
     "จ.": 0,
     "อ.": 1,
@@ -178,7 +188,7 @@ export function sortByDay(data) {
     "Sat": 6,
   };
 
-  const sortedData = data.sort((a, b) => {
+  const sortedData = scheduleItems.sort((a, b) => {
     const dayA = days[a.day];
     const dayB = days[b.day];
     if (dayA < dayB) {
