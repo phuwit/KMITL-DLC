@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.1",
+    "@types/file-saver": "^2.0.7",
     "autoprefixer": "^10.4.20",
     "dotenv-cli": "^7.4.4",
     "postcss": "^8.4.49",
@@ -23,7 +24,9 @@
     "web-ext": "^8.3.0"
   },
   "dependencies": {
-    "html-to-image": "^1.11.11"
+    "file-saver": "^2.0.5",
+    "html-to-image": "^1.11.11",
+    "ical-generator": "^8.0.1"
   },
   "packageManager": "pnpm@9.7.1+sha512.faf344af2d6ca65c4c5c8c2224ea77a81a5e8859cbc4e06b1511ddce2f0151512431dd19e6aff31f2c6a8f5f2aced9bd2273e1fed7dd4de1868984059d2c4247"
 }
