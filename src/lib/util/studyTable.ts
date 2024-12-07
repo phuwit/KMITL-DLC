@@ -1,11 +1,15 @@
 import type { ClassInfo, ScheduleItem, Subject } from '$lib/types';
+import constants from '$lib/constants';
 
 export function getinfo(rawTable: HTMLTableElement) {
 	const table = rawTable.querySelectorAll('tbody')[1];
-	const facultyName = table.childNodes[6].textContent.trim();
-	const departmentSubject = table.childNodes[10].textContent.trim().split('   ');
-	const departmentTerm = table.childNodes[14].textContent.trim().split('   ');
-	const studentName = table.childNodes[18].textContent.trim().split('   ');
+	const facultyName = table.childNodes[6]?.textContent?.trim() || constants.messages.scrapeError;
+	const departmentSubject =
+		table.childNodes[10]?.textContent?.trim().split('   ') || constants.messages.scrapeError;
+	const departmentTerm =
+		table.childNodes[14]?.textContent?.trim().split('   ') || constants.messages.scrapeError;
+	const studentName =
+		table.childNodes[18]?.textContent?.trim().split('   ') || constants.messages.scrapeError;
 	return {
 		facultyName,
 		department: departmentSubject[0].trim(),
@@ -26,17 +30,18 @@ export function scrapeTable(rawTable: HTMLTableElement) {
 		})
 		.splice(1);
 
-	let scrapedData: Subject[] = [];
+	const scrapedData: Subject[] = [];
 
 	studyTableRowsArray.forEach((item) => {
-		const subjectId = item.childNodes[5].textContent;
-		const subjectName = item.childNodes[9].textContent;
-		const subjectCredits = item.childNodes[13].textContent;
+		const subjectId: string = item.childNodes[5].textContent || constants.messages.scrapeError;
+		const subjectName: string = item.childNodes[9].textContent || constants.messages.scrapeError;
+		const subjectCredits: string =
+			item.childNodes[13].textContent || constants.messages.scrapeError;
 
 		const roomInfo = item.childNodes[29];
-		let room = [];
+		const room: string[] = [];
 		roomInfo.childNodes.forEach((item) => {
-			if (item.textContent != '') {
+			if (item.textContent) {
 				room.push(item.textContent);
 			}
 		});
@@ -44,9 +49,9 @@ export function scrapeTable(rawTable: HTMLTableElement) {
 		const labRoom = room[1];
 
 		const buildingInfo = item.childNodes[33];
-		const building = [];
+		const building: string[] = [];
 		buildingInfo.childNodes.forEach((item) => {
-			if (item.textContent != '') {
+			if (item.textContent) {
 				building.push(item.textContent);
 			}
 		});
@@ -56,19 +61,20 @@ export function scrapeTable(rawTable: HTMLTableElement) {
 		const subjectLecture: ClassInfo = {
 			building: lectureBuilding,
 			room: lectureRoom,
-			sec: item.childNodes[17].textContent,
+			sec: item.childNodes[17].textContent || constants.messages.scrapeError,
 			periods: []
 		};
 		const subjectLab: ClassInfo = {
 			building: labBuilding,
 			room: labRoom,
-			sec: item.childNodes[21].textContent,
+			sec: item.childNodes[21].textContent || constants.messages.scrapeError,
 			periods: []
 		};
-		const subjectDescription = item.childNodes[35].textContent;
+		const subjectDescription: string =
+			item.childNodes[35].textContent || constants.messages.scrapeError;
 		const subjectPeriod = item.childNodes[25];
 		subjectPeriod.childNodes.forEach((item) => {
-			if (item.textContent.includes('ท') || item.textContent.includes('L')) {
+			if (item.textContent && constants.scraper.classTypes.lecture.some((typeString) => item.textContent?.includes(typeString))) {
 				const splitData = item.textContent.split(' ');
 				const time = splitData[1].split('-');
 				const period = {
@@ -77,7 +83,7 @@ export function scrapeTable(rawTable: HTMLTableElement) {
 					end: time[1]
 				};
 				subjectLecture.periods.push(period);
-			} else if (item.textContent.includes('ป') || item.textContent.includes('P')) {
+			} else if (item.textContent && constants.scraper.classTypes.lab.some((typeString) => item.textContent?.includes(typeString))) {
 				const splitData = item.textContent.split(' ');
 				const time = splitData[1].split('-');
 				const period = {
@@ -104,7 +110,11 @@ export function scrapeTable(rawTable: HTMLTableElement) {
 }
 
 export function flattenStudyTable(subjects: Subject[]) {
-	let flattenData: ScheduleItem[] = [];
+	function getDayFromString(dayString: keyof typeof constants.scraper.days) {
+		return constants.scraper.days[dayString];
+	}
+
+	const flattenData: ScheduleItem[] = [];
 	subjects.forEach((item) => {
 		console.log(item);
 		const {
@@ -122,7 +132,7 @@ export function flattenStudyTable(subjects: Subject[]) {
 			building: lectureBuilding
 		} = subjectLecture;
 		const { sec: labSec, periods: labPeriod, room: labRoom, building: labBuilding } = subjectLab;
-		if (lectureSec != '') {
+		if (lectureSec) {
 			lecturePeriod.forEach((item) => {
 				const { day, start, end } = item;
 				const data: ScheduleItem = {
@@ -133,15 +143,15 @@ export function flattenStudyTable(subjects: Subject[]) {
 					sec: lectureSec,
 					room: lectureRoom,
 					building: lectureBuilding,
-					type: 'ท',
-					day,
+					type: 'lecture',
+					day: getDayFromString(day as keyof typeof constants.scraper.days),
 					start,
 					end
 				};
 				flattenData.push(data);
 			});
 		}
-		if (labSec != '') {
+		if (labSec) {
 			labPeriod.forEach((item) => {
 				const { day, start, end } = item;
 				const data: ScheduleItem = {
@@ -149,10 +159,10 @@ export function flattenStudyTable(subjects: Subject[]) {
 					subjectName,
 					subjectCredits,
 					subjectDescription,
-					day,
+					day: getDayFromString(day as keyof typeof constants.scraper.days),
 					start,
 					end,
-					type: 'ป',
+					type: 'lab',
 					sec: labSec,
 					room: labRoom,
 					building: labBuilding
@@ -165,26 +175,9 @@ export function flattenStudyTable(subjects: Subject[]) {
 }
 
 export function sortByDay(scheduleItems: ScheduleItem[]) {
-	const days = {
-		'จ.': 0,
-		'อ.': 1,
-		'พ.': 2,
-		'พฤ.': 3,
-		'ศ.': 4,
-		'ส.': 5,
-		'อา.': 6,
-		Sun: 0,
-		Mon: 1,
-		Tue: 2,
-		Wed: 3,
-		Thu: 4,
-		Fri: 5,
-		Sat: 6
-	};
-
-	const sortedData = scheduleItems.sort((a, b) => {
-		const dayA = days[a.day];
-		const dayB = days[b.day];
+	return scheduleItems.sort((a, b) => {
+		const dayA = a.day;
+		const dayB = b.day;
 		if (dayA < dayB) {
 			return -1;
 		} else if (dayA > dayB) {
@@ -198,6 +191,4 @@ export function sortByDay(scheduleItems: ScheduleItem[]) {
 			return 0;
 		}
 	});
-
-	return sortedData;
 }

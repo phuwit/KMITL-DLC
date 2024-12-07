@@ -25,10 +25,10 @@ export interface ScheduleItem {
 	subjectName: string;
 	subjectCredits: string;
 	subjectDescription: string;
-	day: string;
+	day: number;
 	start: string;
 	end: string;
-	type: 'ท' | 'ป';
+	type: 'lecture' | 'lab';
 	sec: string;
 	room: string;
 	building: string;

@@ -2,10 +2,11 @@ import studyTable from '$lib/components/studyTable.svelte';
 import { scrapeTable, flattenStudyTable, sortByDay, getinfo } from '$lib/util/studyTable';
 
 import '$lib/styles/styles.css';
+import { mount } from 'svelte';
 
 const getStudyTable = document.querySelector('table');
 const info = getinfo(getStudyTable);
-let scrapedData = sortByDay(flattenStudyTable(scrapeTable(getStudyTable)));
+const scrapedData = sortByDay(flattenStudyTable(scrapeTable(getStudyTable)));
 const oldBody = document.body.innerHTML;
 
 // Add font เพราะเรียกจาก CSS แล้วมันจะไม่ load ให้
@@ -16,7 +17,10 @@ fontPrompt.innerHTML = `
 document.head.appendChild(fontPrompt);
 
 document.body.innerHTML = '';
-new studyTable({
+
+console.log(scrapedData)
+
+mount(studyTable, {
 	target: document.body,
 	props: {
 		schedule: scrapedData,

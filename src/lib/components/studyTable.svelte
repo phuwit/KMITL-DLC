@@ -1,5 +1,7 @@
-<script>
-	export let schedule = [];
+<script lang="ts">
+	import type { ScheduleItem } from '$lib/types';
+
+	export let schedule: ScheduleItem[] = [];
 	export let oldTable = '';
 	export let faculty = '';
 	export let department = '';
@@ -10,13 +12,13 @@
 	export let studentName = '';
 	import { toPng } from 'html-to-image';
 
-	const days = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'];
-	const englishDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-	let table = undefined;
+	const days = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.' ];
+	const englishDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+	let newTableContainer: HTMLElement;
 	let mode = 'new';
 
 	const download = async () => {
-		const dataUrl = await toPng(table);
+		const dataUrl = await toPng(newTableContainer);
 		const link = document.createElement('a');
 		link.download = 'image.png';
 		link.href = dataUrl;
@@ -75,12 +77,19 @@
 		}
 	};
 
-	const createTimeSlot = (day) => {
-		const dayIndex = days.findIndex((item) => item === day);
+	const createTimeSlot = (dayIndex: number) => {
+    interface TimeSlot {
+      subjectName: string;
+      subjectIndex: number;
+      colspan: number;
+      color: string;
+      info: ScheduleItem
+    }
+
 		const filtered = schedule.filter(
-			(item) => item.day === day || item.day === englishDays[dayIndex]
+			(item) => item.day === dayIndex
 		);
-		const timeSlots = [];
+		const timeSlots: TimeSlot[] = [];
 		for (let index = 0; index < 12 * 4; index++) {
 			timeSlots.push(undefined);
 		}
@@ -103,7 +112,7 @@
 				};
 			}
 		});
-		const final = [];
+		const final: TimeSlot[] = [];
 		timeSlots.forEach((item) => {
 			if (item === undefined) {
 				final.push(undefined);
@@ -122,7 +131,7 @@
 </script>
 
 {#if mode == 'new'}
-	<div bind:this={table} class="flex w-full flex-col justify-center p-5 shadow">
+	<div bind:this={newTableContainer} class="flex w-full flex-col justify-center p-5 shadow">
 		<div class="w-full rounded-t-lg p-4 text-white" style="background-color: {headerColor};">
 			<p class="text-center">{faculty}</p>
 			<p class="text-center">{department} {major}</p>
@@ -151,7 +160,7 @@
 				{#each days as day, index}
 					<tr class="h-[14.28571%] hover:bg-slate-100">
 						<td class="p-1">{englishDays[index]}</td>
-						{#each createTimeSlot(day) as timeSlot}
+						{#each createTimeSlot(index) as timeSlot}
 							{#if timeSlot === undefined}
 								<td class="w-[2.08333%] py-1" />
 							{:else}
