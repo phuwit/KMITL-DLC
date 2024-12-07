@@ -3,23 +3,23 @@
 @tailwind utilities;
 
 @layer base {
-  img {
-    @apply inline-block;
-  }
+	img {
+		@apply inline-block;
+	}
 }
 
 * {
-  @apply font-prompt transition-all;
+	@apply font-prompt transition-all;
 }
 
 td {
-  @apply text-center border-l border-r font-prompt font-light;
+	@apply border-l border-r text-center font-prompt font-light;
 }
 
 th {
-  @apply text-center text-sm border;
+	@apply border text-center text-sm;
 }
 
 tbody {
-  @apply border;
+	@apply border;
 }

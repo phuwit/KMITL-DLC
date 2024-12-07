@@ -1,29 +1,25 @@
 {
-  "name": "KMITL+ (unofficial phuwit's build)",
-  "description": "a ~~chrome~~web extension that add more features to KMITL's website. (unofficial phuwit's build)",
-  "version": "2.1.1",
-  "manifest_version": 3,
-  "icons": {
-    "192": "icon-192x192.png",
-    "256": "icon-256x256.png",
-    "384": "icon-384x384.png",
-    "512": "icon-512x512.png"
-  },
-  "content_scripts": [
-    {
-      "js": ["src/content/studyTable.ts"],
-      "matches": [
-        "https://*.reg.kmitl.ac.th/u_student/report_studytable_show.php"
-      ]
-    },
-    {
-      "js": ["src/content/examSchedule.ts"],
-      "matches": [
-        "https://*.reg.kmitl.ac.th/u_student/report_examtable_show.php"
-      ]
-    }
-  ],
-  "browser_specific_settings": {
-    "gecko": { "id": "kmitl-plus-unofficial@phuwit.github.io" }
-  }
+	"name": "KMITL+ (unofficial phuwit's build)",
+	"description": "a ~~chrome~~web extension that add more features to KMITL's website. (unofficial phuwit's build)",
+	"version": "2.1.1",
+	"manifest_version": 3,
+	"icons": {
+		"192": "icon-192x192.png",
+		"256": "icon-256x256.png",
+		"384": "icon-384x384.png",
+		"512": "icon-512x512.png"
+	},
+	"content_scripts": [
+		{
+			"js": ["src/content/studyTable.ts"],
+			"matches": ["https://*.reg.kmitl.ac.th/u_student/report_studytable_show.php"]
+		},
+		{
+			"js": ["src/content/examSchedule.ts"],
+			"matches": ["https://*.reg.kmitl.ac.th/u_student/report_examtable_show.php"]
+		}
+	],
+	"browser_specific_settings": {
+		"gecko": { "id": "kmitl-plus-unofficial@phuwit.github.io" }
+	}
 }
