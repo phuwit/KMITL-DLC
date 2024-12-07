@@ -1,4 +1,4 @@
-import { ClassInfo, ScheduleItem, Subject } from "../types";
+import type { ClassInfo, ScheduleItem, Subject } from "$lib/types";
 
 export function getinfo(rawTable: HTMLTableElement) {
   const table = rawTable.querySelectorAll("tbody")[1];

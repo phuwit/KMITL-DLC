@@ -1,5 +1,5 @@
-import ExamSchedule from "../lib/components/examSchedule.svelte";
-import "../assets/styles.css";
+import ExamSchedule from "$lib/components/examSchedule.svelte";
+import "$assets/styles.css";
 
 let start = 17;
 

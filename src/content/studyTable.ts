@@ -1,12 +1,12 @@
-import studyTable from "../lib/components/studyTable.svelte";
+import studyTable from "$lib/components/studyTable.svelte";
 import {
   scrapeTable,
   flattenStudyTable,
   sortByDay,
   getinfo,
-} from "../lib/util/studyTable";
+} from "$lib/util/studyTable";
 
-import "../assets/styles.css";
+import "$assets/styles.css";
 
 const getStudyTable = document.querySelector("table");
 const info = getinfo(getStudyTable);
