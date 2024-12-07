@@ -18,9 +18,7 @@
     "baseUrl": ".",
     "paths": {
       "$lib": ["./src/lib"],
-      "$lib/*": ["./src/lib/*"],
-      "$assets": ["./src/assets"],
-      "$assets/*": ["./src/assets/*"]
+      "$lib/*": ["./src/lib/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],

@@ -6,7 +6,7 @@ import {
   getinfo,
 } from "$lib/util/studyTable";
 
-import "$assets/styles.css";
+import "$lib/styles/styles.css";
 
 const getStudyTable = document.querySelector("table");
 const info = getinfo(getStudyTable);
