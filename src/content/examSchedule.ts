@@ -1,10 +1,12 @@
 import ExamSchedule from '$lib/components/examSchedule.svelte';
+import constants from '$lib/constants';
 import '$lib/styles/styles.css';
+import { mount } from 'svelte';
 
 let start = 17;
 
 let getSubject = [];
-let oldDesign = document.body.innerHTML;
+const oldDesign = document.body.innerHTML;
 
 const monthTxt2Num = {
 	'ม.ค.': '1',
@@ -33,16 +35,51 @@ const monthTxt2Num = {
 	Dec: '12'
 };
 
+interface PersonalInfo {
+  departmentAndProgramme: string;
+  faculty: string;
+  semester: string;
+  semesterAndYear: string;
+  studentId: string;
+  idAndName: string;
+  term: string;
+  year: string;
+}
+
+interface ExamScheduleItem {
+		order: string
+		subjectCode: string
+		subjectName: string
+		sec: string
+		credit: string
+		examType: string
+		room: string
+		startTime: Date
+		endTime: Date
+		date: Date
+}
+
+interface ExamScheduleData {
+  date: Date;
+  subject: ExamScheduleItem[]
+}
+
+const fontPrompt = document.createElement('style');
+fontPrompt.innerHTML = `
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+`;
+document.head.appendChild(fontPrompt);
+
 while (true) {
-	const getScape = document.querySelector(
+	const rawData = document.querySelector(
 		`body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(${start})`
 	);
-	if (!getScape) {
+	if (!rawData) {
 		break;
 	}
-	const getSubjectInfo = [];
-	for (let i = 0; i < getScape.children.length; i += 2) {
-		const element = getScape.children[i];
+	const getSubjectInfo: (string | null)[] = [];
+	for (let i = 0; i < rawData.children.length; i += 2) {
+		const element = rawData.children[i];
 		const text = element.textContent;
 		getSubjectInfo.push(text);
 	}
@@ -53,31 +90,30 @@ while (true) {
 		start += 2;
 		continue;
 	}
-	const dateScrap = getSubjectInfo[6].split(' ');
+	const dateScrape = getSubjectInfo[6]?.split(' ');
 	const date =
-		dateScrap.length > 1
-			? new Date(`20${Number(dateScrap[3])}-${monthTxt2Num[dateScrap[2]]}-${dateScrap[1]}`)
-			: null;
-	const timeScrap = getSubjectInfo[7]
-		.replace('น.', '')
+		dateScrape && dateScrape.length > 1
+			? new Date(`20${Number(dateScrape[3])}-${monthTxt2Num[dateScrape[2] as keyof typeof monthTxt2Num]}-${dateScrape[1]}`)
+			: new Date(0);
+	const timeScrape = getSubjectInfo[7]?.replace('น.', '')
 		.trim()
 		.split('-')
 		.map((e) => e.split(':'));
 	let startTime;
 	let endTime;
-	if (timeScrap.length == 2) {
-		startTime = new Date(date).setHours(parseInt(timeScrap[0][0]), parseInt(timeScrap[0][1]));
-		endTime = new Date(date).setHours(parseInt(timeScrap[1][0]), parseInt(timeScrap[1][1]));
+	if (timeScrape && timeScrape.length == 2) {
+		startTime = new Date(date).setHours(parseInt(timeScrape[0][0]), parseInt(timeScrape[0][1]));
+		endTime = new Date(date).setHours(parseInt(timeScrape[1][0]), parseInt(timeScrape[1][1]));
 	}
-	const data = {
+	const data: ExamScheduleItem = {
 		order: getSubjectInfo[0] ? getSubjectInfo[0] : '',
 		subjectCode: getSubjectInfo[1] ? getSubjectInfo[1] : '',
 		subjectName: getSubjectInfo[2] ? getSubjectInfo[2] : '',
 		sec: getSubjectInfo[3] ? getSubjectInfo[3] : '',
 		credit: getSubjectInfo[4] ? getSubjectInfo[4] : '',
 		examType: getSubjectInfo[5] ? String(getSubjectInfo[5]).trim() : '',
-		startTime: startTime ? new Date(startTime) : null,
-		endTime: endTime ? new Date(endTime) : null,
+		startTime: startTime ? new Date(startTime) : new Date(0),
+		endTime: endTime ? new Date(endTime) : new Date(0),
 		date,
 		room: getSubjectInfo[8] ? getSubjectInfo[8] : ''
 	};
@@ -95,60 +131,51 @@ getSubject = getSubject.sort((a, b) => {
 			return 1;
 		}
 	}
-	return a.startTime?.getTime() - b.startTime?.getTime();
+	return 0;
 });
 
-const groupByDate = [];
+const schedule: ExamScheduleData[] = [];
 getSubject.forEach((e) => {
-	const isExist = groupByDate.find((f) => f.date?.getTime() === e.date?.getTime());
+	const isExist = schedule.find((f) => f.date?.getTime() === e.date?.getTime());
 	if (isExist) {
 		isExist.subject.push(e);
 	} else {
-		groupByDate.push({ date: e.date, subject: [e] });
+		schedule.push({ date: e.date, subject: [e] });
 	}
 });
 
-// @ts-ignore
-const termForm = document.querySelector('#mid_or_final').value;
-
-const fontPrompt = document.createElement('style');
-fontPrompt.innerHTML = `
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
-`;
-document.head.appendChild(fontPrompt);
-
-const data = {
-	term: termForm,
+const personalInfo: PersonalInfo = {
+	term: document.querySelector<HTMLSelectElement>('#mid_or_final')?.value|| constants.messages.scrapeError,
 	faculty: document.querySelector(
 		'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(4) > td > strong'
-	).textContent,
+	)?.textContent || constants.messages.scrapeError,
 	departmentAndProgramme: document.querySelector(
 		'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(6) > td'
-	).textContent,
+	)?.textContent || constants.messages.scrapeError,
 	semesterAndYear: document.querySelector(
 		'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(8) > td'
-	).textContent,
-	studentInfo: document.querySelector(
+	)?.textContent || constants.messages.scrapeError,
+	idAndName: document.querySelector(
 		'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(10) > td'
-	).textContent,
-	// @ts-ignore
-	year: document.querySelector('#year').value,
-	// @ts-ignore
-	semester: document.querySelector('#semester').value,
-	// @ts-ignore
-	studentId: document.querySelector('#student_id').value
+	)?.textContent || constants.messages.scrapeError,
+	year: document.querySelector<HTMLInputElement>('#year')?.value || constants.messages.scrapeError,
+	semester: document.querySelector<HTMLInputElement>('#semester')?.value || constants.messages.scrapeError,
+	studentId: document.querySelector<HTMLInputElement>('#student_id')?.value || constants.messages.scrapeError
 };
 
 document.body.innerHTML = '';
 
-const oldStyle = document.head.querySelector("link[type='text/css']");
-document.head.removeChild(oldStyle);
+const oldStyles = document.head.querySelector("link[type='text/css']");
+if (oldStyles) document.head.removeChild(oldStyles);
 
-new ExamSchedule({
+console.log(schedule);
+console.log(personalInfo);
+
+mount(ExamSchedule, {
 	target: document.body,
 	props: {
-		schedule: groupByDate,
-		data,
+		schedule,
+		data: personalInfo,
 		oldDesign
 	}
 });
