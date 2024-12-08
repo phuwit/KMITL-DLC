@@ -74,7 +74,12 @@ export function scrapeTable(rawTable: HTMLTableElement) {
 			item.childNodes[35].textContent || constants.messages.scrapeError;
 		const subjectPeriod = item.childNodes[25];
 		subjectPeriod.childNodes.forEach((item) => {
-			if (item.textContent && constants.scraper.classTypes.lecture.some((typeString) => item.textContent?.includes(typeString))) {
+			if (
+				item.textContent &&
+				constants.scraper.classTypes.lecture.some((typeString) =>
+					item.textContent?.includes(typeString)
+				)
+			) {
 				const splitData = item.textContent.split(' ');
 				const time = splitData[1].split('-');
 				const period = {
@@ -83,7 +88,12 @@ export function scrapeTable(rawTable: HTMLTableElement) {
 					end: time[1]
 				};
 				subjectLecture.periods.push(period);
-			} else if (item.textContent && constants.scraper.classTypes.lab.some((typeString) => item.textContent?.includes(typeString))) {
+			} else if (
+				item.textContent &&
+				constants.scraper.classTypes.lab.some((typeString) =>
+					item.textContent?.includes(typeString)
+				)
+			) {
 				const splitData = item.textContent.split(' ');
 				const time = splitData[1].split('-');
 				const period = {

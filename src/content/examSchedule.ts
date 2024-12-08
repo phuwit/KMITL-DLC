@@ -36,32 +36,32 @@ const monthTxt2Num = {
 };
 
 interface PersonalInfo {
-  departmentAndProgramme: string;
-  faculty: string;
-  semester: string;
-  semesterAndYear: string;
-  studentId: string;
-  idAndName: string;
-  term: string;
-  year: string;
+	departmentAndProgramme: string;
+	faculty: string;
+	semester: string;
+	semesterAndYear: string;
+	studentId: string;
+	idAndName: string;
+	term: string;
+	year: string;
 }
 
 interface ExamScheduleItem {
-		order: string
-		subjectCode: string
-		subjectName: string
-		sec: string
-		credit: string
-		examType: string
-		room: string
-		startTime: Date
-		endTime: Date
-		date: Date
+	order: string;
+	subjectCode: string;
+	subjectName: string;
+	sec: string;
+	credit: string;
+	examType: string;
+	room: string;
+	startTime: Date;
+	endTime: Date;
+	date: Date;
 }
 
 interface ExamScheduleData {
-  date: Date;
-  subject: ExamScheduleItem[]
+	date: Date;
+	subject: ExamScheduleItem[];
 }
 
 const fontPrompt = document.createElement('style');
@@ -93,9 +93,12 @@ while (true) {
 	const dateScrape = getSubjectInfo[6]?.split(' ');
 	const date =
 		dateScrape && dateScrape.length > 1
-			? new Date(`20${Number(dateScrape[3])}-${monthTxt2Num[dateScrape[2] as keyof typeof monthTxt2Num]}-${dateScrape[1]}`)
+			? new Date(
+					`20${Number(dateScrape[3])}-${monthTxt2Num[dateScrape[2] as keyof typeof monthTxt2Num]}-${dateScrape[1]}`
+				)
 			: new Date(0);
-	const timeScrape = getSubjectInfo[7]?.replace('น.', '')
+	const timeScrape = getSubjectInfo[7]
+		?.replace('น.', '')
 		.trim()
 		.split('-')
 		.map((e) => e.split(':'));
@@ -145,22 +148,30 @@ getSubject.forEach((e) => {
 });
 
 const personalInfo: PersonalInfo = {
-	term: document.querySelector<HTMLSelectElement>('#mid_or_final')?.value|| constants.messages.scrapeError,
-	faculty: document.querySelector(
-		'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(4) > td > strong'
-	)?.textContent || constants.messages.scrapeError,
-	departmentAndProgramme: document.querySelector(
-		'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(6) > td'
-	)?.textContent || constants.messages.scrapeError,
-	semesterAndYear: document.querySelector(
-		'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(8) > td'
-	)?.textContent || constants.messages.scrapeError,
-	idAndName: document.querySelector(
-		'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(10) > td'
-	)?.textContent || constants.messages.scrapeError,
+	term:
+		document.querySelector<HTMLSelectElement>('#mid_or_final')?.value ||
+		constants.messages.scrapeError,
+	faculty:
+		document.querySelector(
+			'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(4) > td > strong'
+		)?.textContent || constants.messages.scrapeError,
+	departmentAndProgramme:
+		document.querySelector(
+			'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(6) > td'
+		)?.textContent || constants.messages.scrapeError,
+	semesterAndYear:
+		document.querySelector(
+			'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(8) > td'
+		)?.textContent || constants.messages.scrapeError,
+	idAndName:
+		document.querySelector(
+			'body > center > form > table > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(10) > td'
+		)?.textContent || constants.messages.scrapeError,
 	year: document.querySelector<HTMLInputElement>('#year')?.value || constants.messages.scrapeError,
-	semester: document.querySelector<HTMLInputElement>('#semester')?.value || constants.messages.scrapeError,
-	studentId: document.querySelector<HTMLInputElement>('#student_id')?.value || constants.messages.scrapeError
+	semester:
+		document.querySelector<HTMLInputElement>('#semester')?.value || constants.messages.scrapeError,
+	studentId:
+		document.querySelector<HTMLInputElement>('#student_id')?.value || constants.messages.scrapeError
 };
 
 document.body.innerHTML = '';

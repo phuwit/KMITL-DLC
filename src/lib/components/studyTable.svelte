@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { ScheduleItem } from '$lib/types';
+	import { generateIcalStudy } from '$lib/util/ical/generator';
+	import { getSemesterInfo } from '$lib/util/scraper/semesterInfo';
 
 	export let schedule: ScheduleItem[] = [];
 	export let oldTable = '';
@@ -12,7 +14,7 @@
 	export let studentName = '';
 	import { toPng } from 'html-to-image';
 
-	const days = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.' ];
+	const days = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
 	const englishDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 	let newTableContainer: HTMLElement;
 	let mode = 'new';
@@ -78,17 +80,15 @@
 	};
 
 	const createTimeSlot = (dayIndex: number) => {
-    interface TimeSlot {
-      subjectName: string;
-      subjectIndex: number;
-      colspan: number;
-      color: string;
-      info: ScheduleItem
-    }
+		interface TimeSlot {
+			subjectName: string;
+			subjectIndex: number;
+			colspan: number;
+			color: string;
+			info: ScheduleItem;
+		}
 
-		const filtered = schedule.filter(
-			(item) => item.day === dayIndex
-		);
+		const filtered = schedule.filter((item) => item.day === dayIndex);
 		const timeSlots: TimeSlot[] = [];
 		for (let index = 0; index < 12 * 4; index++) {
 			timeSlots.push(undefined);
@@ -310,5 +310,12 @@
 		class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
 	>
 		{mode == 'new' ? 'Old Design' : 'New Design'}
+	</button>
+	<button
+		class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
+		on:click={async () => {
+			console.log(await generateIcalStudy(schedule));
+		}}
+		>Generate iCal
 	</button>
 </div>

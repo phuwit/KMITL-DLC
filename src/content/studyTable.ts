@@ -18,7 +18,7 @@ document.head.appendChild(fontPrompt);
 
 document.body.innerHTML = '';
 
-console.log(scrapedData)
+console.log(scrapedData);
 
 mount(studyTable, {
 	target: document.body,

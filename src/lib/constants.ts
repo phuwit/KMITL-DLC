@@ -1,4 +1,6 @@
 export default {
+	appName: 'KMTIL+ (phuwit)',
+	utcOffset: 7,
 	messages: {
 		scrapeError: 'Scraping error.'
 	},
@@ -23,5 +25,8 @@ export default {
 			Fri: 5,
 			Sat: 6
 		}
+	},
+	apiPaths: {
+		newReg: 'https://k8s.reg.kmitl.ac.th/reg/api/?level_id=1&function='
 	}
 };
