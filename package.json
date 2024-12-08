@@ -8,7 +8,7 @@
 		"dev": "vite",
 		"build": "vite build && mkdir -p temp && zip -r temp/dist.zip dist",
 		"preview": "vite preview",
-		"sign": "mkdir -p temp && zip -r temp/source.zip * -x node_modules/\\* -x .env && dotenv -- web-ext sign --source-dir dist/ --channel unlisted --upload-source-code temp/source.zip",
+		"sign": "mkdir -p temp && git archive --format=zip --output=temp/source.zip && dotenv -- web-ext sign --source-dir dist/ --channel unlisted --upload-source-code temp/source.zip",
 		"sign:build": "npm run build && npm run sign",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint ."
