@@ -1,6 +1,6 @@
-# KMITL+ (unofficial phuwit's fork)
+# KMITL DLC
 
-a ~~chrome~~web extension that add more features to KMITL's website. (unofficial phuwit's build)
+a web extension that add more features to KMITL Rgistration's website. Forked from KMITL+ by t0ngk.
 
 ## Attribution
 
@@ -16,3 +16,4 @@ based on the original work of [t0ngk](khttps://github.com/t0ngk)'s [KMITL+](http
 ## Changes
 
 - Compile and sign using Mozilla's web-ext
+- iCal generation from study table

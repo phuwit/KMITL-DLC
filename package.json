@@ -1,14 +1,14 @@
 {
-	"name": "kmitl-plus",
+	"name": "kmitl-dlc",
 	"license": "AGPL-3.0-only",
 	"private": true,
-	"version": "2.1.1",
+	"version": "0.1.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build",
+		"build": "vite build && mkdir -p temp && zip -r temp/dist.zip dist",
 		"preview": "vite preview",
-		"sign": "mkdir -p temp && zip -r temp/source.zip * -x node_modules/\\* -x .env && cd dist/ && dotenv -e ../.env -- web-ext sign --channel unlisted --upload-source-code ../temp/source.zip",
+		"sign": "mkdir -p temp && zip -r temp/source.zip * -x node_modules/\\* -x .env && dotenv -- web-ext sign --source-dir dist/ --channel unlisted --upload-source-code temp/source.zip",
 		"sign:build": "npm run build && npm run sign",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint ."

@@ -1,13 +1,12 @@
 {
-	"name": "KMITL+ (unofficial phuwit's build)",
-	"description": "a ~~chrome~~web extension that add more features to KMITL's website. (unofficial phuwit's build)",
-	"version": "2.1.1",
+	"name": "KMITL DLC",
+	"description": "a web extension that add more features to KMITL Rgistration's website. Forked from KMITL+ by t0ngk.",
+	"version": "0.1.0",
 	"manifest_version": 3,
 	"icons": {
-		"192": "icon-192x192.png",
-		"256": "icon-256x256.png",
-		"384": "icon-384x384.png",
-		"512": "icon-512x512.png"
+		"48": "icon-48px.png",
+		"128": "icon-128px.png",
+		"256": "icon-256px.png"
 	},
 	"content_scripts": [
 		{
@@ -20,6 +19,6 @@
 		}
 	],
 	"browser_specific_settings": {
-		"gecko": { "id": "kmitl-plus-unofficial@phuwit.github.io" }
+		"gecko": { "id": "kmitl-dlc@phuwit.github.io" }
 	}
 }
