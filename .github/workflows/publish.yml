@@ -32,7 +32,7 @@ jobs:
 
     - run: pnpm run build
 
-    - run: mkdir -p temp && git archive --format=zip --output=temp/source.zip
+    - run: mkdir -p temp && git archive --format=zip --output=temp/source.zip ${{ github.ref }}
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
