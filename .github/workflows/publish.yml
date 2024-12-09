@@ -97,9 +97,20 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          path: artifacts
-          merge-multiple: true
+          name: unpacked
+          path: unpacked/
+
+      - run: mkdir -p uploads/
+
+      - run: |
+          cd unpacked
+          zip -r ../uploads/unpacked.zip *
+
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     path: artifacts
+      #     merge-multiple: true
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/**
+          files: uploads/**
