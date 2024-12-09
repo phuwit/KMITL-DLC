@@ -47,6 +47,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: unpacked
+          path: dist/
 
       - run: git archive --format=zip --output=source.zip ${{ github.ref }}
 
