@@ -63,12 +63,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - run: touch .env && echo "WEB_EXT_API_KEY=$WEB_EXT_API_KEY" >> .env && echo "WEB_EXT_API_SECRET=$WEB_EXT_API_SECRET" >> .env
-        env:
-          WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
-          WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
+      # - run: touch .env && echo "WEB_EXT_API_KEY=$WEB_EXT_API_KEY" >> .env && echo "WEB_EXT_API_SECRET=$WEB_EXT_API_SECRET" >> .env
+      #   env:
+      #     WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
+      #     WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
 
-      - run: pnpm run sign
+      - run: mkdir -p temp && git archive --format=zip --output=temp/source.zip HEAD
+
+      - run: pnpm exec web-ext sign --source-dir dist/ --channel unlisted --upload-source-code temp/source.zip
         env:
           WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
           WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
