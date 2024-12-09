@@ -63,7 +63,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - run: touch .env && echo WEB_EXT_API_KEY=${{ secrets.WEB_EXT_API_KEY }} >> .env && echo WEB_EXT_API_SECRET=${{ secrets.WEB_EXT_API_SECRET }} >> .env
+      - run: touch .env && echo "WEB_EXT_API_KEY=$WEB_EXT_API_KEY" >> .env && echo "WEB_EXT_API_SECRET=$WEB_EXT_API_SECRET" >> .env
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
 
       - run: pnpm run sign
         env:
