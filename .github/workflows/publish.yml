@@ -48,7 +48,9 @@ jobs:
         with:
           name: unpacked
 
-      - run: mkdir -p temp && git archive --format=zip --output=source.zip ${{ github.ref }}
+      - run: git archive --format=zip --output=source.zip ${{ github.ref }}
+
+      - run: ls -R
 
       - run: unzip unpacked
 
