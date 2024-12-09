@@ -1,7 +1,7 @@
 {
 	"name": "KMITL DLC",
-	"description": "a web extension that add more features to KMITL Rgistration's website. Forked from KMITL+ by t0ngk.",
-	"version": "0.1.0",
+	"description": "a web extension that add more features to KMITL Registration's website. Forked from KMITL+ by t0ngk.",
+	"version": "0.1.1",
 	"manifest_version": 3,
 	"icons": {
 		"48": "icon-48px.png",
