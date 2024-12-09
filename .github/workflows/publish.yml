@@ -51,10 +51,6 @@ jobs:
 
       - run: git archive --format=zip --output=source.zip ${{ github.ref }}
 
-      - run: ls -R
-
-      - run: unzip unpacked
-
       - name: "web-ext build"
         id: web-ext-build
         uses: kewisch/action-web-ext@v1
