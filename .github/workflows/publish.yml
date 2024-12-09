@@ -65,6 +65,7 @@ jobs:
           sourceCode: source.zip
           channel: unlisted
           license: AGPL-3.0-only
+          licenseFile: LICENSE
           apiKey: ${{ secrets.WEB_EXT_API_KEY }}
           apiSecret: ${{ secrets.WEB_EXT_API_SECRET }}
 
