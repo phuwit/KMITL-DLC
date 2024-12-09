@@ -53,19 +53,18 @@ jobs:
 
       - name: "web-ext build"
         id: web-ext-build
-        uses: kewisch/action-web-ext@v1
+        uses: phuwit/action-web-ext@main
         with:
           cmd: build
           source: dist
 
-      - uses: kewisch/action-web-ext@v1
+      - uses: phuwit/action-web-ext@main
         with:
           cmd: sign
           source: ${{ steps.web-ext-build.outputs.target }}
           sourceCode: source.zip
           channel: unlisted
           license: AGPL-3.0-only
-          licenseFile: LICENCE
           apiKey: ${{ secrets.WEB_EXT_API_KEY }}
           apiSecret: ${{ secrets.WEB_EXT_API_SECRET }}
 
