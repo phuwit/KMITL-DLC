@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build && mkdir -p temp && zip -r temp/dist.zip dist",
+		"build": "vite build",
 		"preview": "vite preview",
 		"sign": "mkdir -p temp && git archive --format=zip --output=temp/source.zip && dotenv -- web-ext sign --source-dir dist/ --channel unlisted --upload-source-code temp/source.zip",
 		"sign:build": "npm run build && npm run sign",
