@@ -88,6 +88,7 @@ jobs:
   #       refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
   github-upload:
+    if: always()
     needs: [build, amo-sign]
     runs-on: ubuntu-latest
     steps:
