@@ -32,8 +32,6 @@ jobs:
 
     - run: pnpm run build
 
-    - run: mkdir -p temp && git archive --format=zip --output=temp/source.zip ${{ github.ref }}
-
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -52,7 +50,7 @@ jobs:
 
       - run: mkdir -p temp && git archive --format=zip --output=source.zip ${{ github.ref }}
 
-      - run: unzip unpacked.zip
+      - run: unzip unpacked
 
       - name: "web-ext build"
         id: web-ext-build
