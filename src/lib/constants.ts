@@ -1,5 +1,5 @@
 export default {
-	appName: 'KMTIL+ (phuwit)',
+	appName: 'KMITL DLC',
 	utcOffset: 7,
 	messages: {
 		scrapeError: 'Scraping error.'
