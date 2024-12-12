@@ -1,5 +1,5 @@
 import constants from '$lib/constants';
-import { getDayIndexOfWeek } from '$lib/util/ical/generator';
+import { getDayIndexOfWeek } from '$lib/utils/ical/generator';
 
 interface SemesterResponse {
 	// Buddhist Calendar
