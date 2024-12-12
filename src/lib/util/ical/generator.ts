@@ -46,7 +46,8 @@ export async function generateIcalStudy(scheduleItems: ScheduleItem[]) {
 	const calendarName = `Study (${constants.appName}@${new Date().toString()})`;
 	const calendar = ical({ name: calendarName, prodId: constants.appName });
 	scheduleItems.forEach((item) => {
-		calendar.createEvent(convertEvent(item));
+    const event = convertEvent(item);
+		calendar.createEvent(event);
 	});
 
 	const calendarBlob = new Blob([calendar.toString()], { type: 'text/calendar;charset=utf-8' });

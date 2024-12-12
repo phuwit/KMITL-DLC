@@ -74,33 +74,29 @@ export function scrapeTable(rawTable: HTMLTableElement) {
 			item.childNodes[35].textContent || constants.messages.scrapeError;
 		const subjectPeriod = item.childNodes[25];
 		subjectPeriod.childNodes.forEach((item) => {
+      if (!item.textContent) return;
+      console.log(item.textContent);
+      const splitData = item.textContent.split(' ');
+      const time = splitData[1].split('-');
+      const period = {
+        day: splitData[0],
+        start: time[0],
+        end: time[1]
+      };
+
+      console.log(subjectLab.periods.some((savedPeriod) => savedPeriod.start === period.start));
+
 			if (
-				item.textContent &&
 				constants.scraper.classTypes.lecture.some((typeString) =>
 					item.textContent?.includes(typeString)
-				)
+				) && !subjectLecture.periods.some((savedPeriod) => savedPeriod.start === period.start)
 			) {
-				const splitData = item.textContent.split(' ');
-				const time = splitData[1].split('-');
-				const period = {
-					day: splitData[0],
-					start: time[0],
-					end: time[1]
-				};
 				subjectLecture.periods.push(period);
 			} else if (
-				item.textContent &&
 				constants.scraper.classTypes.lab.some((typeString) =>
 					item.textContent?.includes(typeString)
-				)
+				) && !subjectLab.periods.some((savedPeriod) => savedPeriod.start === period.start)
 			) {
-				const splitData = item.textContent.split(' ');
-				const time = splitData[1].split('-');
-				const period = {
-					day: splitData[0],
-					start: time[0],
-					end: time[1]
-				};
 				subjectLab.periods.push(period);
 			}
 		});
