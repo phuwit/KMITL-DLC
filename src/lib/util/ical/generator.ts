@@ -29,9 +29,9 @@ export async function generateIcalStudy(scheduleItems: ScheduleItem[]) {
 			),
 			end: getDayIndexOfWeek(
 				new Date(
-					new Date(semesterInfo.ends).setHours(
-						Number(scheduleItem.start.slice(0, 2)),
-						Number(scheduleItem.start.slice(-2))
+					new Date(semesterInfo.starts).setHours(
+						Number(scheduleItem.end.slice(0, 2)),
+						Number(scheduleItem.end.slice(-2))
 					)
 				),
 				scheduleItem.day
