@@ -1,6 +1,6 @@
 import constants from '$lib/constants';
 import type { ScheduleItem } from '$lib/types';
-import { getSemesterInfo } from '$lib/utils/scraper/semesterInfo';
+import { getSemesterInfo } from '$lib/utils/scraper/semester-info';
 import { saveAs } from 'file-saver';
 import ical, { ICalEventRepeatingFreq, type ICalEventData } from 'ical-generator';
 

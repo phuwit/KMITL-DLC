@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ScheduleItem } from '$lib/types';
 	import { generateIcalStudy } from '$lib/utils/ical/generator';
-	import { getSemesterInfo } from '$lib/utils/scraper/semesterInfo';
+	import { getSemesterInfo } from '$lib/utils/scraper/semester-info';
 
 	export let schedule: ScheduleItem[] = [];
 	export let oldTable = '';
