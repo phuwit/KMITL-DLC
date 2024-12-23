@@ -1,12 +1,12 @@
-<script>
+<script lang="ts">
 	import { toPng } from 'html-to-image';
 
 	export let schedule;
 	export let data;
-	export let oldDesign;
+	export let oldTable: HTMLDivElement;
 
-	let form;
-	let table;
+	let form: HTMLFormElement;
+	let table: HTMLDivElement;
 	let downloading = false;
 	let useNewDesign = true;
 
@@ -115,13 +115,15 @@
 	</div>
 {/if}
 {#if !useNewDesign}
-	{@html oldDesign}
+	,
+	<div bind:this={oldTable}></div>
 {/if}
 
 <div class="fixed bottom-4 right-4 flex gap-2">
 	<button
 		class="border bg-slate-100 p-2 outline outline-0 outline-slate-200 transition-all hover:shadow-lg hover:outline-2 active:bg-slate-200"
 		on:click={download}
+		aria-label="download"
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"

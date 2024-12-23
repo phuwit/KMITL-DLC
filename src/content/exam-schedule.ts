@@ -6,7 +6,8 @@ import { mount } from 'svelte';
 let start = 17;
 
 let getSubject = [];
-const oldDesign = document.body.innerHTML;
+const oldTable = document.createElement('div');
+oldTable.innerHTML = document.body.innerHTML;
 
 const monthTxt2Num = {
 	'ม.ค.': '1',
@@ -187,6 +188,6 @@ mount(ExamSchedule, {
 	props: {
 		schedule,
 		data: personalInfo,
-		oldDesign
+		oldTable: oldTable
 	}
 });

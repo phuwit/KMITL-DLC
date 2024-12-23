@@ -66,9 +66,6 @@ const config: Config = {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
-			fontFamily: {
-				sans: [...fontFamily.sans]
-			},
 			keyframes: {
 				'accordion-down': {
 					from: { height: '0' },
@@ -88,6 +85,9 @@ const config: Config = {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'caret-blink': 'caret-blink 1.25s ease-out infinite'
 			}
+		},
+		fontFamily: {
+			sans: ['Prompt', ...fontFamily.sans]
 		}
 	},
 	plugins: [tailwindcssAnimate]
