@@ -122,7 +122,7 @@
 	<button
 		class="border bg-slate-100 p-2 outline outline-0 outline-slate-200 transition-all hover:shadow-lg hover:outline-2 active:bg-slate-200"
 		on:click={download}
-    aria-label="download"
+		aria-label="download"
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"

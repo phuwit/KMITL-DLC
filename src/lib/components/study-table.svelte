@@ -76,7 +76,7 @@
 		} else {
 			return false;
 		}
-	};
+	}
 
 	const createTimeSlot = (dayIndex: number) => {
 		interface TimeSlot {
@@ -88,7 +88,7 @@
 		}
 
 		const filtered = schedule.filter((item) => item.day === dayIndex);
-		const timeSlots: Array<TimeSlot|undefined> = [];
+		const timeSlots: Array<TimeSlot | undefined> = [];
 		for (let index = 0; index < 12 * 4; index++) {
 			timeSlots.push(undefined);
 		}
@@ -193,7 +193,7 @@
 		</table>
 	</div>
 {:else}
-  <table bind:this={originalTable}></table>
+	<table bind:this={originalTable}></table>
 {/if}
 
 <div class="fixed bottom-3 right-3 flex gap-2">
@@ -263,7 +263,7 @@
 					customizeMenu = !customizeMenu;
 				}}
 				class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
-        aria-label='customize'
+				aria-label="customize"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -286,7 +286,7 @@
 		<button
 			on:click={download}
 			class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
-      aria-label="download"
+			aria-label="download"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

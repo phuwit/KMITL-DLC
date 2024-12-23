@@ -5,7 +5,7 @@ import '$lib/styles/styles.css';
 import { mount } from 'svelte';
 
 const originalTable = document.querySelector('table');
-if(!originalTable) throw new Error('unable to select table to scrape from');
+if (!originalTable) throw new Error('unable to select table to scrape from');
 const info = getinfo(originalTable);
 const scrapedData = sortByDay(flattenStudyTable(scrapeTable(originalTable)));
 
