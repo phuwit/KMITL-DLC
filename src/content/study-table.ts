@@ -4,10 +4,10 @@ import { scrapeTable, flattenStudyTable, sortByDay, getinfo } from '$lib/utils/s
 import '$lib/styles/styles.css';
 import { mount } from 'svelte';
 
-const getStudyTable = document.querySelector('table');
-const info = getinfo(getStudyTable);
-const scrapedData = sortByDay(flattenStudyTable(scrapeTable(getStudyTable)));
-const oldBody = document.body.innerHTML;
+const originalTable = document.querySelector('table');
+if(!originalTable) throw new Error('unable to select table to scrape from');
+const info = getinfo(originalTable);
+const scrapedData = sortByDay(flattenStudyTable(scrapeTable(originalTable)));
 
 // Add font เพราะเรียกจาก CSS แล้วมันจะไม่ load ให้
 const fontPrompt = document.createElement('style');
@@ -24,7 +24,7 @@ mount(studyTable, {
 	target: document.body,
 	props: {
 		schedule: scrapedData,
-		oldTable: oldBody,
+		originalTable,
 		faculty: info.facultyName,
 		department: info.department,
 		major: info.major,

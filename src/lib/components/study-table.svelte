@@ -1,10 +1,9 @@
 <script lang="ts">
 	import type { ScheduleItem } from '$lib/types';
 	import { generateIcalStudy } from '$lib/utils/ical/generator';
-	import { getSemesterInfo } from '$lib/utils/scraper/semester-info';
 
 	export let schedule: ScheduleItem[] = [];
-	export let oldTable = '';
+	export let originalTable: HTMLTableElement;
 	export let faculty = '';
 	export let department = '';
 	export let major = '';
@@ -47,9 +46,9 @@
 		'#f43f5e'
 	];
 
-	const makeTheme = () => {
-		let theme = [];
-		let usedColor = [];
+	const makeTheme = (): { subjectId: string; subjectName: string; color: string }[] => {
+		let theme: { subjectId: string; subjectName: string; color: string }[] = [];
+		let usedColor: string[] = [];
 		schedule.forEach((item) => {
 			let themeColor = color[Math.floor(Math.random() * color.length)];
 			while (usedColor.includes(themeColor)) {
@@ -70,7 +69,7 @@
 	};
 	let theme = makeTheme();
 
-	const getTheme = (subjectId) => {
+	function getTheme(subjectId: string) {
 		const filtered = theme.filter((item) => item.subjectId === subjectId);
 		if (filtered.length > 0) {
 			return filtered[0].color;
@@ -89,7 +88,7 @@
 		}
 
 		const filtered = schedule.filter((item) => item.day === dayIndex);
-		const timeSlots: TimeSlot[] = [];
+		const timeSlots: Array<TimeSlot|undefined> = [];
 		for (let index = 0; index < 12 * 4; index++) {
 			timeSlots.push(undefined);
 		}
@@ -112,12 +111,12 @@
 				};
 			}
 		});
-		const final: TimeSlot[] = [];
+		const final: typeof timeSlots = [];
 		timeSlots.forEach((item) => {
 			if (item === undefined) {
 				final.push(undefined);
 			} else if (final[final.length - 1] !== undefined) {
-				if (final[final.length - 1].subjectIndex !== item.subjectIndex) {
+				if (final[final.length - 1]?.subjectIndex !== item.subjectIndex) {
 					final.push(item);
 				}
 			} else {
@@ -141,7 +140,7 @@
 		<table class="h-screen w-full rounded-b-lg bg-white shadow">
 			<thead>
 				<tr>
-					<th class="p-1 font-light" />
+					<th class="p-1 font-light"></th>
 					<th class="p-1 font-light" colspan="4">08:00 - 09:00</th>
 					<th class="p-1 font-light" colspan="4">09:00 - 10:00</th>
 					<th class="p-1 font-light" colspan="4">10:00 - 11:00</th>
@@ -157,12 +156,12 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each days as day, index}
+				{#each { length: 7 }, index}
 					<tr class="h-[14.28571%] hover:bg-slate-100">
 						<td class="p-1">{englishDays[index]}</td>
 						{#each createTimeSlot(index) as timeSlot}
 							{#if timeSlot === undefined}
-								<td class="w-[2.08333%] py-1" />
+								<td class="w-[2.08333%] py-1"></td>
 							{:else}
 								<td class={`w-[2.08333%] px-0 py-1 text-white`} colspan={timeSlot.colspan}>
 									<div
@@ -194,7 +193,7 @@
 		</table>
 	</div>
 {:else}
-	{@html oldTable}
+  <table bind:this={originalTable}></table>
 {/if}
 
 <div class="fixed bottom-3 right-3 flex gap-2">
@@ -219,7 +218,7 @@
 										<div
 											class={`h-5 w-5 rounded-full`}
 											style={`background-color: ${headerColor}`}
-										/>
+										></div>
 									</div>
 									<p class="text-sm">Background Color</p>
 								</div>
@@ -241,7 +240,7 @@
 												style={`background-color: ${
 													theme ? `${getTheme(item.subjectId)}` : '#64748b'
 												}`}
-											/>
+											></div>
 										</div>
 										<p class="text-sm">Background Color</p>
 									</div>
@@ -264,6 +263,7 @@
 					customizeMenu = !customizeMenu;
 				}}
 				class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
+        aria-label='customize'
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -286,6 +286,7 @@
 		<button
 			on:click={download}
 			class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
+      aria-label="download"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
