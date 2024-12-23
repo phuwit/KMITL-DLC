@@ -1,5 +1,5 @@
-import studyTable from '$lib/components/studyTable.svelte';
-import { scrapeTable, flattenStudyTable, sortByDay, getinfo } from '$lib/util/scraper/studyTable';
+import studyTable from '$lib/components/study-table.svelte';
+import { scrapeTable, flattenStudyTable, sortByDay, getinfo } from '$lib/util/scraper/study-table';
 
 import '$lib/styles/styles.css';
 import { mount } from 'svelte';

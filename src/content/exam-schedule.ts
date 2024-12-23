@@ -1,4 +1,4 @@
-import ExamSchedule from '$lib/components/examSchedule.svelte';
+import ExamSchedule from '$lib/components/exam-schedule.svelte';
 import constants from '$lib/constants';
 import '$lib/styles/styles.css';
 import { mount } from 'svelte';
