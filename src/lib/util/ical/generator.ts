@@ -1,6 +1,7 @@
 import constants from '$lib/constants';
 import type { ScheduleItem } from '$lib/types';
-import { getSemesterInfo } from '$lib/util/scraper/semester-info';
+import { getLocalTimeZone, Time, toCalendarDateTime } from '@internationalized/date';
+import { DateRange } from 'bits-ui';
 import { saveAs } from 'file-saver';
 import ical, { ICalEventRepeatingFreq, type ICalEventData } from 'ical-generator';
 
@@ -11,34 +12,31 @@ export function getDayIndexOfWeek(date: Date, dayIndex: number): Date {
 	return adjestedDate;
 }
 
-export async function generateIcalStudy(scheduleItems: ScheduleItem[]) {
-	const semesterInfo = await getSemesterInfo();
+export async function generateIcalStudy(scheduleItems: ScheduleItem[], repeatingRange: DateRange) {
+	if (!repeatingRange.start || !repeatingRange.end)
+		throw new Error('Invalid repeatingRange');
 
 	function convertEvent(scheduleItem: ScheduleItem): ICalEventData {
 		const event: ICalEventData = {
 			summary: `${scheduleItem.subjectName} (${scheduleItem.type})`,
 			location: `${scheduleItem.building}:${scheduleItem.room}`,
 			start: getDayIndexOfWeek(
-				new Date(
-					new Date(semesterInfo.starts).setHours(
-						Number(scheduleItem.start.slice(0, 2)),
-						Number(scheduleItem.start.slice(-2))
-					)
-				),
+				toCalendarDateTime(
+					repeatingRange.start!,
+					new Time(Number(scheduleItem.start.slice(0, 2)), Number(scheduleItem.start.slice(-2)))
+				).toDate(getLocalTimeZone()),
 				scheduleItem.day
 			),
 			end: getDayIndexOfWeek(
-				new Date(
-					new Date(semesterInfo.starts).setHours(
-						Number(scheduleItem.end.slice(0, 2)),
-						Number(scheduleItem.end.slice(-2))
-					)
-				),
+				toCalendarDateTime(
+					repeatingRange.start!,
+					new Time(Number(scheduleItem.start.slice(0, 2)), Number(scheduleItem.start.slice(-2)))
+				).toDate(getLocalTimeZone()),
 				scheduleItem.day
 			),
 			repeating: {
 				freq: ICalEventRepeatingFreq.WEEKLY,
-				until: semesterInfo.ends
+				until: repeatingRange.end!.toDate(getLocalTimeZone())
 			}
 		};
 		return event;

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { ScheduleItem } from '$lib/types';
+	import IcalGenerate from '$lib/components/calendar/generate.svelte';
+  import type { ScheduleItem } from '$lib/types';
 	import { generateIcalStudy } from '$lib/util/ical/generator';
 
 	export let schedule: ScheduleItem[] = [];
@@ -315,11 +316,12 @@
 	>
 		{mode == 'new' ? 'Old Design' : 'New Design'}
 	</button>
-	<button
-		class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
+	<!-- <button
+		class="flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
 		on:click={async () => {
-			console.log(await generateIcalStudy(schedule));
+			await generateIcalStudy(schedule);
 		}}
 		>Generate iCal
-	</button>
+	</button> -->
+  <IcalGenerate schedule={schedule}/>
 </div>
