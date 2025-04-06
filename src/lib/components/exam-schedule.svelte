@@ -73,7 +73,7 @@
 								{#if subjectIndex === 0}
 									<td class="whitespace-nowrap p-2" rowspan={schedule.subjects.length}>
 										{#if schedule.date}
-											{new Date(schedule.date).toLocaleDateString(['th-TH'], {
+											{new Date(schedule.date).toLocaleDateString(undefined, {
 												weekday: 'short',
 												day: 'numeric',
 												month: 'short',
@@ -86,14 +86,12 @@
 								{/if}
 								<td class="whitespace-nowrap p-2">
 									{#if subject.startTime && subject.endTime}
-										{new Date(subject.startTime).toLocaleTimeString(['en-EN'], {
+										{new Date(subject.startTime).toLocaleTimeString(undefined, {
 											hour: '2-digit',
 											minute: '2-digit',
-											hour12: false
-										})} - {new Date(subject.endTime).toLocaleTimeString(['en-EN'], {
+										})} - {new Date(subject.endTime).toLocaleTimeString(undefined, {
 											hour: '2-digit',
 											minute: '2-digit',
-											hour12: false
 										})}
 									{:else}
 										<span>N/A</span>
