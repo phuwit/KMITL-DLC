@@ -27,7 +27,7 @@ const monthTxt2Num = {
   Dec: '12'
 };
 
-interface ExamScheduleData {
+interface ExamSubject {
   order: string;
   subjectCode: string;
   subjectName: string;
@@ -40,9 +40,9 @@ interface ExamScheduleData {
   date: Date | null;
 }
 
-export interface ExamScheduleDate {
-  date: Date;
-  subject: ExamScheduleData[];
+export interface ExamSchedule {
+  date: Date | null;
+  subjects: ExamSubject[];
 }
 
 export interface PersonalInfo {
@@ -60,7 +60,7 @@ export interface PersonalInfo {
 const FIRST_SUBJECT_ROW_INDEX = 16;
 
 
-export function scrapeExamSchedule(rawData: Element): ExamScheduleDate[] {
+export function scrapeExamSchedule(rawData: Element): ExamSchedule[] {
   const rawSubjectRows = [...rawData.children].filter((_, index) => (index >= FIRST_SUBJECT_ROW_INDEX) && (index % 2 == FIRST_SUBJECT_ROW_INDEX % 2));
 
   const scrapedSubjects = rawSubjectRows.map((subjectRow) => {
@@ -102,7 +102,7 @@ export function scrapeExamSchedule(rawData: Element): ExamScheduleDate[] {
       endTime.setHours(parseInt(timeScrape[1][0]), parseInt(timeScrape[1][1]));
     }
 
-    const scheduleData: ExamScheduleData = {
+    const scheduleData: ExamSubject = {
       order: getSubjectInfo[0] ? getSubjectInfo[0] : '',
       subjectCode: getSubjectInfo[1] ? getSubjectInfo[1] : '',
       subjectName: getSubjectInfo[2] ? getSubjectInfo[2] : '',
@@ -130,13 +130,13 @@ export function scrapeExamSchedule(rawData: Element): ExamScheduleDate[] {
     return 0;
   });
 
-  const schedule: ExamScheduleDate[] = [];
+  const schedule: ExamSchedule[] = [];
   scrapedSubjectsTimeSorted.forEach((scheduleItem) => {
     const isExist = schedule.find((scheduleData) => scheduleData.date?.getTime() === scheduleItem.date?.getTime());
     if (isExist) {
-      isExist.subject.push(scheduleItem);
+      isExist.subjects.push(scheduleItem);
     } else {
-      schedule.push({ date: scheduleItem.date, subject: [scheduleItem] });
+      schedule.push({ date: scheduleItem.date, subjects: [scheduleItem] });
     }
   });
   return schedule;

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { ExamScheduleDate, PersonalInfo } from '$lib/util/scraper/exam-schedule';
+	import type { ExamSchedule, PersonalInfo } from '$lib/util/scraper/exam-schedule';
 	import { toPng } from 'html-to-image';
 	import { onMount } from 'svelte';
 
-  export let schedule: ExamScheduleDate[];
+  export let schedule: ExamSchedule[];
   export let personalInfo: PersonalInfo;
   export let originalTable: HTMLDivElement;
 
@@ -67,13 +67,13 @@
 			</div>
 			<table class="w-full">
 				<tbody>
-					{#each schedule as date, dateIndex}
-						{#each date.subject as subject, subjectIndex}
-							<tr class="border text-sm font-light" class:bg-slate-200={dateIndex % 2 == 1}>
+					{#each schedule as schedule, scheduleIndex}
+						{#each schedule.subjects as subject, subjectIndex}
+							<tr class="border text-sm font-light" class:bg-slate-200={scheduleIndex % 2 == 1}>
 								{#if subjectIndex === 0}
-									<td class="whitespace-nowrap p-2" rowspan={date.subject.length}>
-										{#if date.date}
-											{new Date(date.date).toLocaleDateString(['th-TH'], {
+									<td class="whitespace-nowrap p-2" rowspan={schedule.subjects.length}>
+										{#if schedule.date}
+											{new Date(schedule.date).toLocaleDateString(['th-TH'], {
 												weekday: 'short',
 												day: 'numeric',
 												month: 'short',
