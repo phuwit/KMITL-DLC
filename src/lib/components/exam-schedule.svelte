@@ -6,6 +6,7 @@
   import * as Table from "$lib/components/shadcn-ui/table";
 	import Button from '$lib/components/shadcn-ui/button/button.svelte';
 	import { Download } from '@lucide/svelte';
+	import { toTitleCase } from '$lib/util/string';
 
   export let schedule: ExamSchedule[];
   export let personalInfo: PersonalInfo;
@@ -86,7 +87,7 @@
               {subject.subjectCode}
             </Table.Cell>
             <Table.Cell>
-              {subject.subjectName}
+              {toTitleCase(subject.subjectName)}
             </Table.Cell>
             <Table.Cell>
               {subject.sec}
