@@ -12,22 +12,22 @@ export function renderStudyTable() {
   const oldTable = document.createElement('div');
   oldTable.innerHTML = document.body.innerHTML;
 
-  // document.body.innerHTML = '';
+  document.body.innerHTML = '';
 
   console.log(scrapedData);
 
-  // mount(studyTable, {
-  //   target: document.body,
-  //   props: {
-  //     schedule: scrapedData,
-  //     oldTable: oldTable,
-  //     faculty: info.facultyName,
-  //     department: info.department,
-  //     major: info.major,
-  //     semester: info.semester,
-  //     year: info.year,
-  //     studentId: info.studentId,
-  //     studentName: info.studentName
-  //   }
-  // });
+  mount(studyTable, {
+    target: document.body,
+    props: {
+      schedule: scrapedData,
+      oldTable: oldTable,
+      faculty: info.facultyName,
+      department: info.department,
+      major: info.major,
+      semester: info.semester,
+      year: info.year,
+      studentId: info.studentId,
+      studentName: info.studentName
+    }
+  });
 }
