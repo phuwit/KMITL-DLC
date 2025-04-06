@@ -87,7 +87,7 @@ const config: Config = {
 			}
 		},
 		fontFamily: {
-			sans: ['Prompt', ...fontFamily.sans]
+			sans: [...fontFamily.sans]
 		}
 	},
 	plugins: [tailwindcssAnimate]

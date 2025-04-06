@@ -12,12 +12,6 @@ export function renderStudyTable() {
   const oldTable = document.createElement('div');
   oldTable.innerHTML = document.body.innerHTML;
 
-  const fontPrompt = document.createElement('style');
-  fontPrompt.innerHTML = `
-  @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
-  `;
-  document.head.appendChild(fontPrompt);
-
   // document.body.innerHTML = '';
 
   console.log(scrapedData);
