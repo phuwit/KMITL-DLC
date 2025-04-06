@@ -1,45 +1,95 @@
 <script lang="ts">
 	import type { ExamSchedule, PersonalInfo } from '$lib/util/scraper/exam-schedule';
 	import { toPng } from 'html-to-image';
-	import { onMount } from 'svelte';
 
   import * as Table from "$lib/components/shadcn-ui/table";
+  import * as Select from "$lib/components/shadcn-ui/select";
 	import Button from '$lib/components/shadcn-ui/button/button.svelte';
 	import { Download } from '@lucide/svelte';
 	import { toTitleCase } from '$lib/util/string';
 
-  export let schedule: ExamSchedule[];
-  export let personalInfo: PersonalInfo;
-  export let originalTable: HTMLDivElement;
+  let { schedule, personalInfo, originalTable }:
+  { schedule: ExamSchedule[], personalInfo: PersonalInfo, originalTable: HTMLDivElement} = $props();
 
-  let form: HTMLFormElement;
-  let table: HTMLDivElement;
-  let downloading = false;
-  let useNewDesign = true;
-  let originalTableContainer: HTMLDivElement;
+  let form: HTMLFormElement | undefined = $state(undefined);
+  let table: HTMLDivElement | undefined = $state(undefined);
+  let downloading = $state(false);
+  let useNewDesign = $state(true);
+  let originalTableContainer: HTMLDivElement | undefined = $state(undefined);
 
-  $: if (originalTableContainer && originalTable && !useNewDesign) {
-    while (originalTableContainer.firstChild) {
-      originalTableContainer.removeChild(originalTableContainer.firstChild);
+  $effect(() => {
+    if (originalTableContainer && originalTable && !useNewDesign) {
+      while (originalTableContainer.firstChild) {
+        originalTableContainer.removeChild(originalTableContainer.firstChild);
+      }
+      originalTableContainer.appendChild(originalTable);
     }
-    originalTableContainer.appendChild(originalTable);
-  }
+  });
 
-	const download = async () => {
-		downloading = true;
-		const elementToCapture = useNewDesign ? table : originalTableContainer;
-		const dataUrl = await toPng(elementToCapture);
-		downloading = false;
-		const link = document.createElement('a');
-		link.download = 'Exam Schedule.png';
-		link.href = dataUrl;
-		link.click();
-	};
+  const download = async () => {
+    downloading = true;
+    const elementToCapture = useNewDesign ? table : originalTableContainer;
+
+    if (!elementToCapture) {
+      throw new Error('Failed to bind table to screenshot');
+    }
+
+    const dataUrl = await toPng(elementToCapture);
+    downloading = false;
+    const link = document.createElement('a');
+    link.download = 'Exam Schedule.png';
+    link.href = dataUrl;
+    link.click();
+  };
+
+
+  const examPeriods = [
+    { value: "M", label: "Midterm" },
+    { value: "F", label: "Final" },
+  ];
+
+  let examPeriodSelectValue = $state(personalInfo.term);
+
+  const examPeriodTriggerLabel = $derived(
+    examPeriods.find((f) => f.value === examPeriodSelectValue)?.label ?? "Select an exam period"
+  );
+
+  $effect(() => {
+    if (examPeriodSelectValue != personalInfo.term) {
+      examPeriodSelectValue && form?.submit();
+    }
+  });
 </script>
 
 {#if useNewDesign}
   <div class="p-16 space-y-4" bind:this={table}>
     <h1 class="font-bold text-2xl">Exam Schedule</h1>
+    <form
+    bind:this={form}
+      action="report_examtable_show.php"
+      method="post"
+    >
+      <input type="hidden" name="year" id="year" value={personalInfo.year} />
+      <input type="hidden" name="semester" id="semester" value={personalInfo.semester} />
+      <input type="hidden" name="student_id" id="student_id" value={personalInfo.studentId} />
+      {#if !downloading}
+        <Select.Root type="single" name="mid_or_final" bind:value={examPeriodSelectValue}>
+          <Select.Trigger class="w-[180px]">{examPeriodTriggerLabel}</Select.Trigger>
+          <Select.Content>
+            <Select.Item value="M" label="Midterm" />
+            <Select.Item value="F" label="Final" />
+          </Select.Content>
+        </Select.Root>
+        <!-- <select name="mid_or_final" class="bg-slate-100" value={personalInfo.term}>
+          <option value="M">Midterm</option>
+          <option value="F">Final</option>
+        </select> -->
+      {:else}
+        <span>
+          {personalInfo.term === 'M' ? 'Midterm' : 'Final'}
+        </span>
+      {/if}
+    </form>
 
     <Table.Root>
       <Table.Header>
