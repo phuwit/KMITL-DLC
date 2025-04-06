@@ -1,4 +1,5 @@
 import constants from "$lib/constants";
+import { toTitleCase } from "$lib/util/string";
 
 const monthTxt2Num = {
   'ม.ค.': '1',
@@ -27,14 +28,14 @@ const monthTxt2Num = {
   Dec: '12'
 };
 
-interface ExamSubject {
+export interface ExamSubject {
   order: string;
-  subjectCode: string;
-  subjectName: string;
-  sec: string;
-  credit: string;
-  examType: string;
-  room: string;
+  id: string;
+  name: string;
+  section: string;
+  credits: string;
+  type: string;
+  location: string;
   startTime: Date | null;
   endTime: Date | null;
   date: Date | null;
@@ -104,15 +105,15 @@ export function scrapeExamSchedule(rawData: Element): ExamSchedule[] {
 
     const scheduleData: ExamSubject = {
       order: getSubjectInfo[0] ? getSubjectInfo[0] : '',
-      subjectCode: getSubjectInfo[1] ? getSubjectInfo[1] : '',
-      subjectName: getSubjectInfo[2] ? getSubjectInfo[2] : '',
-      sec: getSubjectInfo[3] ? getSubjectInfo[3] : '',
-      credit: getSubjectInfo[4] ? getSubjectInfo[4] : '',
-      examType: getSubjectInfo[5] ? String(getSubjectInfo[5]).trim() : '',
+      id: getSubjectInfo[1] ? getSubjectInfo[1] : '',
+      name: getSubjectInfo[2] ? toTitleCase(getSubjectInfo[2]) : '',
+      section: getSubjectInfo[3] ? getSubjectInfo[3] : '',
+      credits: getSubjectInfo[4] ? getSubjectInfo[4] : '',
+      type: getSubjectInfo[5] ? String(getSubjectInfo[5]).trim() : '',
       startTime,
       endTime,
       date,
-      room: getSubjectInfo[8] ? getSubjectInfo[8] : ''
+      location: getSubjectInfo[8] ? getSubjectInfo[8] : ''
     };
     return scheduleData;
   });

@@ -36,7 +36,7 @@
 </script>
 
 <Dialog.Root>
-	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Generate Calendar</Dialog.Trigger>
+	<Dialog.Trigger class={buttonVariants({ variant: 'default' })}>Generate Calendar</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
 			<Dialog.Title>Generate Calendar</Dialog.Title>

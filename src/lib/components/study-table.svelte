@@ -1,5 +1,6 @@
 <script lang="ts">
-	import IcalGenerate from '$lib/components/calendar/generate.svelte';
+	import Button from '$lib/components/shadcn-ui/button/button.svelte';
+	import IcalGenerate from '$lib/components/calendar/generate-study.svelte';
   import type { ScheduleItem } from '$lib/types';
 	import { generateIcalStudy } from '$lib/util/ical/generator';
 
@@ -13,10 +14,11 @@
 	export let studentId = '';
 	export let studentName = '';
 	import { toPng } from 'html-to-image';
+	import { Download, Pencil } from '@lucide/svelte';
 
 	const englishDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 	let newTableContainer: HTMLElement;
-	let mode = 'new';
+	let useNewDesign = true;
 
 	const download = async () => {
 		const dataUrl = await toPng(newTableContainer);
@@ -133,7 +135,7 @@
 	let headerColor = '#f97316';
 </script>
 
-{#if mode == 'new'}
+{#if useNewDesign}
 	<div bind:this={newTableContainer} class="flex w-full flex-col justify-center p-5 shadow">
 		<div class="w-full rounded-t-lg p-4 text-white" style="background-color: {headerColor};">
 			<p class="text-center">{faculty}</p>
@@ -201,7 +203,7 @@
 {/if}
 
 <div class="fixed bottom-3 right-3 flex gap-2">
-	{#if mode == 'new'}
+	{#if useNewDesign}
 		<div class="relative">
 			{#if customizeMenu}
 				<div
@@ -262,60 +264,28 @@
 					</div>
 				</div>
 			{/if}
-			<button
-				on:click={() => {
-					customizeMenu = !customizeMenu;
-				}}
-				class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
-				aria-label="customize"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="1.5"
-					stroke="currentColor"
-					class="h-6 w-6"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-					/>
-				</svg>
-			</button>
+
+      <Button
+        onclick={() => {customizeMenu = !customizeMenu;}}
+      >
+        <Pencil />
+      </Button>
 		</div>
 	{/if}
-	{#if mode == 'new'}
-		<button
-			on:click={download}
-			class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
-			aria-label="download"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="h-6 w-6"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
-				/>
-			</svg>
-		</button>
-	{/if}
-	<button
-		on:click={() => {
-			mode = mode == 'new' ? 'old' : 'new';
+	{#if useNewDesign}
+    <Button
+      onclick={download}
+    >
+      <Download />
+    </Button>
+  {/if}
+	<Button
+		onclick={() => {
+			useNewDesign = !useNewDesign;
 		}}
-		class=" flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
 	>
-		{mode == 'new' ? 'Old Design' : 'New Design'}
-	</button>
+		{useNewDesign ? 'New Design' : 'Old Design'}
+	</Button>
 	<!-- <button
 		class="flex cursor-pointer items-center justify-center rounded-full bg-orange-500 p-2 text-white transition-all hover:bg-orange-600 active:bg-orange-400"
 		on:click={async () => {

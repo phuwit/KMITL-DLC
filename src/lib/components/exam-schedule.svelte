@@ -6,10 +6,10 @@
   import * as Select from "$lib/components/shadcn-ui/select";
 	import Button from '$lib/components/shadcn-ui/button/button.svelte';
 	import { Download } from '@lucide/svelte';
-	import { toTitleCase } from '$lib/util/string';
+	import { generateIcalExam } from '$lib/util/ical/generator';
 
-  let { schedule, personalInfo, originalTable }:
-  { schedule: ExamSchedule[], personalInfo: PersonalInfo, originalTable: HTMLDivElement} = $props();
+  let { schedules, personalInfo, originalTable }:
+  { schedules: ExamSchedule[], personalInfo: PersonalInfo, originalTable: HTMLDivElement} = $props();
 
   let form: HTMLFormElement | undefined = $state(undefined);
   let table: HTMLDivElement | undefined = $state(undefined);
@@ -105,7 +105,7 @@
         </Table.Row>
       </Table.Header>
       <Table.Body class="whitespace-nowrap">
-        {#each schedule as schedule, scheduleIndex}
+        {#each schedules as schedule, scheduleIndex}
           {#each schedule.subjects as subject, subjectIndex}
           <Table.Row>
             <Table.Cell>
@@ -134,22 +134,22 @@
               {/if}
             </Table.Cell>
             <Table.Cell>
-              {subject.subjectCode}
+              {subject.id}
             </Table.Cell>
             <Table.Cell>
-              {toTitleCase(subject.subjectName)}
+              {subject.name}
             </Table.Cell>
             <Table.Cell>
-              {subject.sec}
+              {subject.section}
             </Table.Cell>
             <Table.Cell>
-              {subject.credit}
+              {subject.credits}
             </Table.Cell>
             <Table.Cell>
-              {subject.examType}
+              {subject.type}
             </Table.Cell>
             <Table.Cell class="whitespace-normal">
-              {subject.room}
+              {subject.location}
             </Table.Cell>
           </Table.Row>
           {/each}
@@ -172,4 +172,9 @@
 	>
 		{useNewDesign ? 'New Design' : 'Old Design'}
 	</Button>
+  <Button
+    onclick={() => {generateIcalExam(schedules)}}
+  >
+    Generate Calendar
+  </Button>
 </div>
