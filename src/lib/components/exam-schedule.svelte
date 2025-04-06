@@ -1,18 +1,29 @@
 <script lang="ts">
+	import type { ExamScheduleDate, PersonalInfo } from '$lib/util/scraper/exam-schedule';
 	import { toPng } from 'html-to-image';
+	import { onMount } from 'svelte';
 
-	export let schedule;
-	export let data;
-	export let oldTable: HTMLDivElement;
+  export let schedule: ExamScheduleDate[];
+  export let personalInfo: PersonalInfo;
+  export let originalTable: HTMLDivElement;
 
-	let form: HTMLFormElement;
-	let table: HTMLDivElement;
-	let downloading = false;
-	let useNewDesign = true;
+  let form: HTMLFormElement;
+  let table: HTMLDivElement;
+  let downloading = false;
+  let useNewDesign = true;
+  let originalTableContainer: HTMLDivElement;
+
+  $: if (originalTableContainer && originalTable && !useNewDesign) {
+    while (originalTableContainer.firstChild) {
+      originalTableContainer.removeChild(originalTableContainer.firstChild);
+    }
+    originalTableContainer.appendChild(originalTable);
+  }
 
 	const download = async () => {
 		downloading = true;
-		const dataUrl = await toPng(table);
+		const elementToCapture = useNewDesign ? table : originalTableContainer;
+		const dataUrl = await toPng(elementToCapture);
 		downloading = false;
 		const link = document.createElement('a');
 		link.download = 'image.png';
@@ -27,10 +38,10 @@
 	>
 		<div class="w-10/12 bg-slate-100" bind:this={table}>
 			<div class="w-full border p-4 text-slate-900">
-				<p class="text-center">{data.faculty}</p>
-				<p class="text-center">{data.departmentAndProgramme}</p>
-				<p class="text-center">{data.semesterAndYear}</p>
-				<p class="text-center">{data.studentInfo}</p>
+				<p class="text-center">{personalInfo.faculty}</p>
+				<p class="text-center">{personalInfo.departmentAndProgramme}</p>
+				<p class="text-center">{personalInfo.semesterAndYear}</p>
+				<p class="text-center">{personalInfo.studentId}</p>
 				<form
 					bind:this={form}
 					on:change={() => {
@@ -39,37 +50,37 @@
 					action="report_examtable_show.php"
 					method="post"
 				>
-					<input type="hidden" name="year" id="year" value={data.year} />
-					<input type="hidden" name="semester" id="semester" value={data.semester} />
-					<input type="hidden" name="student_id" id="student_id" value={data.student_id} />
+					<input type="hidden" name="year" id="year" value={personalInfo.year} />
+					<input type="hidden" name="semester" id="semester" value={personalInfo.semester} />
+					<input type="hidden" name="student_id" id="student_id" value={personalInfo.studentId} />
 					{#if !downloading}
-						<select name="mid_or_final" class="bg-slate-100" value={data.term}>
+						<select name="mid_or_final" class="bg-slate-100" value={personalInfo.term}>
 							<option value="M">Mid Term</option>
 							<option value="F">Final</option>
 						</select>
 					{:else}
 						<span>
-							{data.term === 'M' ? 'Mid Term' : 'Final'}
+							{personalInfo.term === 'M' ? 'Mid Term' : 'Final'}
 						</span>
 					{/if}
 				</form>
 			</div>
 			<table class="w-full">
 				<tbody>
-					{#each schedule as day, indexDay}
-						{#each day.subject as subject, index}
-							<tr class="border text-sm font-light" class:bg-slate-200={indexDay % 2 == 1}>
-								{#if index === 0}
-									<td class="whitespace-nowrap p-2" rowspan={day.subject.length}>
-										{#if day.date}
-											{new Date(day.date).toLocaleDateString(['th-TH'], {
+					{#each schedule as date, dateIndex}
+						{#each date.subject as subject, subjectIndex}
+							<tr class="border text-sm font-light" class:bg-slate-200={dateIndex % 2 == 1}>
+								{#if subjectIndex === 0}
+									<td class="whitespace-nowrap p-2" rowspan={date.subject.length}>
+										{#if date.date}
+											{new Date(date.date).toLocaleDateString(['th-TH'], {
 												weekday: 'short',
 												day: 'numeric',
 												month: 'short',
 												year: 'numeric'
 											})}
 										{:else}
-											<span>ไม่ทราบ</span>
+											<span>N/A</span>
 										{/if}
 									</td>
 								{/if}
@@ -85,7 +96,7 @@
 											hour12: false
 										})}
 									{:else}
-										<span>ไม่ทราบ</span>
+										<span>N/A</span>
 									{/if}
 								</td>
 								<td class="whitespace-nowrap p-2">
@@ -113,10 +124,8 @@
 			</table>
 		</div>
 	</div>
-{/if}
-{#if !useNewDesign}
-	,
-	<div bind:this={oldTable}></div>
+{:else}
+    <div bind:this={originalTableContainer}></div>
 {/if}
 
 <div class="fixed bottom-4 right-4 flex gap-2">
