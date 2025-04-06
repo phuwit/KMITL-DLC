@@ -7,12 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
 temp
 web-ext-artifacts
+
+node_modules
+.output
+stats.html
+stats-*.json
+.wxt
+web-ext.config.ts
 
 # Editor directories and files
 .vscode/*
@@ -24,6 +27,3 @@ web-ext-artifacts
 *.njsproj
 *.sln
 *.sw?
-
-# environments
-.env
