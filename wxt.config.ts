@@ -16,6 +16,10 @@ export default defineConfig({
   manifest: {
     name: 'KMITL DLC',
     description: "a web extension that add more features to KMITL Registration's website. Forked from KMITL+ by t0ngk.",
-    
+    browser_specific_settings: {
+      gecko: {
+        id: 'kmitl-dlc@phuwit.github.io'
+      }
+    }
   },
 });
