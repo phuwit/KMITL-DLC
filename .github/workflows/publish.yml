@@ -92,6 +92,11 @@ jobs:
           name: zip-firefox
           path: .output/
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-firefox
+          path: .output/
+
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
@@ -134,7 +139,6 @@ jobs:
   #       refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
   release-upload:
-    if: always()
     needs: [ sign-amo, build-chromium ]
     runs-on: ubuntu-latest
     steps:
