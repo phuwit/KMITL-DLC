@@ -6,6 +6,7 @@ name: publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-chromium:
@@ -30,11 +31,13 @@ jobs:
       - name: Build
         run: pnpm run zip
 
+      - run: ls .output/
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-chromium
-          path: .output/*-chrome.zip
+          path: .output/**-chrome.zip
 
   build-firefox:
     runs-on: ubuntu-latest
@@ -58,6 +61,8 @@ jobs:
       - name: Build
         run: pnpm run zip:firefox
 
+      - run: ls .output/
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -68,7 +73,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zip-firefox
-          path: .output/*.zip
+          path: |
+            .output/**-firefox.zip
+            .output/**-sources.zip
 
   sign-amo:
     needs: [ build-firefox ]
