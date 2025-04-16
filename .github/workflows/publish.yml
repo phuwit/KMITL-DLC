@@ -1,14 +1,14 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: publish
+name: firefox publish
 
 on:
   release:
     types: [published]
 
 jobs:
-  build:
+  build-chromium:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,24 +27,58 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - run: pnpm run build
+      - name: Build
+        run: pnpm run zip
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: unpacked
-          path: dist/
+          name: build-chromium
+          path: .output/*-chrome.zip
 
-  amo-sign:
-    needs: [build]
+  build-firefox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm run zip:firefox
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-firefox
+          path: .output/firefox-mv3/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: zip-firefox
+          path: .output/*.zip
+
+  sign-amo:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v4
         with:
-          name: unpacked
-          path: dist/
+          name: zip-firefox
+          path: .output/
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -60,20 +94,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - run: mkdir -p temp && git archive --format=zip --output=temp/source.zip ${{ github.ref }}
-
-      - run: pnpm exec web-ext sign
+      - name: Sign
+        run: |
+          pnpm exec web-ext sign \
+            --source-dir .output/firefox-mv3/
+            --upload-source-code .output/*-sources.zip
         env:
           WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
           WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
           WEB_EXT_CHANNEL: unlisted
-          WEB_EXT_SOURCE_DIR: dist/
-          WEB_EXT_API_UPLOAD_SOURCE_CODE: temp/source.zip
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: web-ext-artifacts
+          name: signed-firefox
           path: web-ext-artifacts/
 
   # chrome-upload:
@@ -87,29 +121,25 @@ jobs:
   #       client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
   #       refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
-  github-upload:
+  release-upload:
     if: always()
-    needs: [build, amo-sign]
+    needs: [sign-amo]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: unpacked
-          path: unpacked/
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: web-ext-artifacts
-          path: uploads
-          merge-multiple: true
-
       - run: mkdir -p uploads/
 
-      - run: |
-          cd unpacked
-          zip -r ../uploads/unpacked.zip *
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-chromium
+          path: uploads/
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: signed-firefox
+          path: uploads
+          merge-multiple: true
 
       - uses: softprops/action-gh-release@v2
         with:
