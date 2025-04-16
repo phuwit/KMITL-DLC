@@ -38,6 +38,8 @@ jobs:
         with:
           name: build-chromium
           path: .output/*-chrome.zip
+          include-hidden-files: true
+          if-no-files-found: error
 
   build-firefox:
     runs-on: ubuntu-latest
@@ -76,6 +78,8 @@ jobs:
           path: |
             .output/*-firefox.zip
             .output/*-sources.zip
+          include-hidden-files: true
+          if-no-files-found: error
 
   sign-amo:
     needs: [ build-firefox ]
@@ -131,7 +135,7 @@ jobs:
 
   release-upload:
     if: always()
-    needs: [sign-amo]
+    needs: [ sign-amo, build-chromium ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
