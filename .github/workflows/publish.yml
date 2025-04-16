@@ -70,6 +70,7 @@ jobs:
         with:
           name: build-firefox
           path: .output/firefox-mv3/
+          if-no-files-found: error
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -89,12 +90,12 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: zip-firefox
-          path: .output/
+          name: build-firefox
+          path: .output/firefox-mv3/
 
       - uses: actions/download-artifact@v4
         with:
-          name: build-firefox
+          name: zip-firefox
           path: .output/
 
       - uses: pnpm/action-setup@v4
