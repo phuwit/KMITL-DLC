@@ -2,7 +2,7 @@
 	"name": "kmitl-dlc",
 	"license": "AGPL-3.0-only",
 	"private": true,
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"type": "module",
 	"scripts": {
 		"sign": "mkdir -p temp && git archive --format=zip --output=temp/source.zip HEAD && dotenv -- web-ext sign --source-dir dist/ --channel unlisted --upload-source-code temp/source.zip",
