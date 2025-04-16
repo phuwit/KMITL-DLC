@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-chromium
-          path: .output/**-chrome.zip
+          path: .output/*-chrome.zip
 
   build-firefox:
     runs-on: ubuntu-latest
@@ -74,8 +74,8 @@ jobs:
         with:
           name: zip-firefox
           path: |
-            .output/**-firefox.zip
-            .output/**-sources.zip
+            .output/*-firefox.zip
+            .output/*-sources.zip
 
   sign-amo:
     needs: [ build-firefox ]
