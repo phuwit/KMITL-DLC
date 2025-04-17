@@ -115,7 +115,7 @@ jobs:
       - name: Sign
         run: |
           pnpm exec web-ext sign \
-            --source-dir .output/firefox-mv3/
+            --source-dir .output/firefox-mv3/ \
             --upload-source-code .output/*-sources.zip
         env:
           WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
