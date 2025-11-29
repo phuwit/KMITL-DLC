@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { defineConfig } from 'wxt';
 
@@ -24,4 +25,7 @@ export default defineConfig({
       'https://regis.reg.kmitl.ac.th/api/?function=get-year-semester-now&level_id=1'
     ],
   },
+  vite: () => ({
+    plugins: [tailwindcss()],
+  }),
 });
