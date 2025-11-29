@@ -33,3 +33,11 @@ export interface ScheduleItem {
 	room: string;
 	building: string;
 }
+
+export interface SemesterInfo {
+  YEAR: string;
+  SEMESTER: string;
+  START_DATETIME_SYSTEM: string;
+  START_DATETIME_ACADEMIC: string;
+  END_DATETIME_ACADEMIC: string;
+}

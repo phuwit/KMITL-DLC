@@ -20,6 +20,9 @@ export default defineConfig({
       gecko: {
         id: 'kmitl-dlc@phuwit.github.io'
       }
-    }
+    },
+    host_permissions: [
+      'https://regis.reg.kmitl.ac.th/api/?function=get-year-semester-now&level_id=1'
+    ],
   },
 });

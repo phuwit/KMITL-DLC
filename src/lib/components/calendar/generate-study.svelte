@@ -15,9 +15,9 @@
   import { RangeCalendar } from "$lib/components/shadcn-ui/range-calendar";
   import type { DateRange } from 'bits-ui';
   import { cn } from '$lib/util/shadcn-ui';
-	import { CalendarIcon } from "@lucide/svelte";
+	import { CalendarIcon, LoaderCircle } from "@lucide/svelte";
 	import { generateIcalStudy } from "$lib/util/ical/generator";
-	import { ScheduleItem } from "$lib/types";
+	import { ScheduleItem, SemesterInfo } from "$lib/types";
 
   let { schedule: schedule }: { schedule: ScheduleItem[]} = $props();
 
@@ -26,13 +26,22 @@
   });
 
   const today = new Date();
-  let value: DateRange = $state({
+  let startDate: DateValue | undefined = $state(undefined);
+
+  let dateRange: DateRange = $state({
     start: new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()),
     end: new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate())
   });
+  let disableDateRangeSelector = $state(true);
 
-  let startValue: DateValue | undefined = $state(undefined);
-
+  fetch('https://regis.reg.kmitl.ac.th/api/?function=get-year-semester-now&level_id=1').then(async (response) => {
+    const semesterInfo: SemesterInfo = await response.json();
+    const semesterStart = new Date(semesterInfo.START_DATETIME_ACADEMIC);
+    const semesterEnd = new Date(semesterInfo.END_DATETIME_ACADEMIC);
+    dateRange.start = new CalendarDate(semesterStart.getFullYear(), semesterStart.getMonth() + 1, semesterStart.getDate());
+    dateRange.end = new CalendarDate(semesterEnd.getFullYear(), semesterEnd.getMonth() + 1, semesterEnd.getDate());
+    disableDateRangeSelector = false;
+  });
 </script>
 
 <Dialog.Root>
@@ -51,35 +60,43 @@
         <Popover.Trigger
           class={cn(
             buttonVariants({ variant: "outline" }),
-            !value && "text-muted-foreground"
+            !dateRange && "text-muted-foreground"
           )}
+          disabled={disableDateRangeSelector}
         >
-          <CalendarIcon class="mr-2 size-4" />
-          {#if value && value.start}
-            {#if value.end}
-              {df.format(value.start.toDate(getLocalTimeZone()))} - {df.format(
-                value.end.toDate(getLocalTimeZone())
+          {#if disableDateRangeSelector}
+            <LoaderCircle class="mr-2 size-4 animate-spin" />
+          {:else}
+            <CalendarIcon class="mr-2 size-4" />
+          {/if}
+          {#if dateRange && dateRange.start}
+            {#if dateRange.end}
+              {df.format(dateRange.start.toDate(getLocalTimeZone()))} - {df.format(
+                dateRange.end.toDate(getLocalTimeZone())
               )}
             {:else}
-              {df.format(value.start.toDate(getLocalTimeZone()))}
+              {df.format(dateRange.start.toDate(getLocalTimeZone()))}
             {/if}
-          {:else if startValue}
-            {df.format(startValue.toDate(getLocalTimeZone()))}
+          {:else if startDate}
+            {df.format(startDate.toDate(getLocalTimeZone()))}
           {:else}
             Pick a date
           {/if}
         </Popover.Trigger>
         <Popover.Content class="w-auto p-0" align="start">
           <RangeCalendar
-            bind:value
+            bind:value={dateRange}
             onStartValueChange={(v) => {
-              startValue = v;
+              startDate = v;
             }}
             numberOfMonths={2}
           />
         </Popover.Content>
       </Popover.Root>
     </div>
+    {#if disableDateRangeSelector}
+      <p>Fetching current semester information...</p>
+    {/if}
 
 		<!-- <Accordion.Root type="single">
       <Accordion.Item value="options-accordion">
@@ -95,7 +112,7 @@
       </Accordion.Item>
     </Accordion.Root> -->
     <Dialog.Footer>
-      <Button onclick={() => generateIcalStudy(schedule, value)}>Generate</Button>
+      <Button onclick={() => generateIcalStudy(schedule, dateRange)}>Generate</Button>
     </Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
