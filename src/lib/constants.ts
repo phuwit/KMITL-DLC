@@ -28,5 +28,20 @@ export default {
 	},
 	apiPaths: {
 		newReg: 'https://k8s.reg.kmitl.ac.th/reg/api/?level_id=1&function='
-	}
+	},
+  storage:{
+    icalFilenamePattern: {
+      key: 'ical-filename-pattern',
+      default: '{{ appName }}-StudyCalendar({{ dateNow }})',
+    },
+    icalSummaryPattern: {
+      key: 'ical-summary-pattern',
+      default: '{{ subjectName }} ({{ type }})',
+    },
+    icalLocationPattern: {
+      key: 'ical-location-pattern',
+      default: '{{ building }}:{{ room }}',
+    },
+  },
+  stringFormatPattern: new RegExp(/{{ (.+?) }}/g),
 };

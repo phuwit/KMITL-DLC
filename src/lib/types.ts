@@ -34,6 +34,23 @@ export interface ScheduleItem {
 	building: string;
 }
 
+export interface ScheduleItemStringify {
+	subjectId: string;
+	subjectName: string;
+	subjectCredits: string;
+	subjectDescription: string;
+	day: string;
+	start: string;
+	end: string;
+	type: string;
+	sec: string;
+	room: string;
+	building: string;
+
+  appName: string;
+  dateNow: string;
+}
+
 export interface SemesterInfo {
   YEAR: string;
   SEMESTER: string;

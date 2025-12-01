@@ -21,6 +21,9 @@ export default defineConfig({
         id: 'kmitl-dlc@phuwit.github.io'
       }
     },
+    permissions: [
+      'storage'
+    ],
     host_permissions: [
       'https://regis.reg.kmitl.ac.th/api/?function=get-year-semester-now&level_id=1'
     ],
