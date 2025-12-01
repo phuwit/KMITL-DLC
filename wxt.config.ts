@@ -2,6 +2,8 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { defineConfig } from 'wxt';
 
+import constants from "./src/lib/constants";
+
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   srcDir: 'src',
@@ -25,7 +27,7 @@ export default defineConfig({
       'storage'
     ],
     host_permissions: [
-      'https://regis.reg.kmitl.ac.th/api/?function=get-year-semester-now&level_id=1'
+      constants.fetchUrls.currentSemesterInfo
     ],
   },
   vite: () => ({

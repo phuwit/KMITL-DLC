@@ -44,4 +44,7 @@ export default {
     },
   },
   stringFormatPattern: new RegExp(/{{ (.+?) }}/g),
+  fetchUrls: {
+    currentSemesterInfo: 'https://regis.reg.kmitl.ac.th/api/?function=get-year-semester-now&level_id=1',
+  }
 };

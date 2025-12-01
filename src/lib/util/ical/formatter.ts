@@ -1,13 +1,22 @@
 import constants from "$lib/constants";
 import { ScheduleItem } from "$lib/types";
+import { toTitleCase } from "$lib/util/string";
+import { DateFormatter, getLocalTimeZone, parseDate } from "@internationalized/date";
 
 export function getScheduleItemStringify(scheduleItem: ScheduleItem): Record<string, string>{
+  const df = new DateFormatter("en-US", {
+    dateStyle: "medium"
+  });
+
   const stringed: Record<string, string> = {};
   for (const [key, value] of Object.entries(scheduleItem)) {
     stringed[key] = String(value);
   }
   stringed['appName'] = constants.appName;
-  stringed['dateNow'] = (new Date()).toDateString();
+  stringed['dateNow'] = df.format(parseDate(new Date().toISOString()).toDate(getLocalTimeZone()));
+
+  stringed['subjectName'] = toTitleCase(stringed['subjectName']);
+  stringed['type'] = toTitleCase(stringed['type']);
   return stringed;
 }
 

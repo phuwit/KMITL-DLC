@@ -24,7 +24,6 @@ export async function generateIcalStudy(scheduleItems: ScheduleItem[], repeating
     .map((e) => {
       return new Promise<string>((resolve) => {
         storage.sync.get(e.key).then((value) => {
-          console.log(Object.keys(value).length);
           if (Object.keys(value).length === 0) {
             resolve(e.default);
           } else {

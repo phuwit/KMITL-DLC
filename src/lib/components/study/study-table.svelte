@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/shadcn-ui/button/button.svelte';
-	import IcalGenerate from '$lib/components/calendar/generate-study.svelte';
+	import IcalGenerate from '$lib/components/study/generate-calendar/generate.svelte';
   import type { ScheduleItem } from '$lib/types';
 	import { generateIcalStudy } from '$lib/util/ical/generator';
 
